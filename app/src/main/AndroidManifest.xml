@@ -19,6 +19,7 @@
         <activity
             android:name="com.fluffymadness.pilemdMobile.ui.SettingsActivity"
             android:label="@string/title_activity_settings"></activity>
+        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     </application>
 
 </manifest>

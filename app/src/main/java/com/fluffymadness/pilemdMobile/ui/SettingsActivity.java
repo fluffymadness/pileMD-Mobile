@@ -2,15 +2,26 @@ package com.fluffymadness.pilemdMobile.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.fluffymadness.pilemdMobile.ui.R;
+import com.turhanoz.android.reactivedirectorychooser.event.OnDirectoryCancelEvent;
+import com.turhanoz.android.reactivedirectorychooser.event.OnDirectoryChosenEvent;
+import com.turhanoz.android.reactivedirectorychooser.ui.DirectoryChooserFragment;
+import com.turhanoz.android.reactivedirectorychooser.ui.OnDirectoryChooserFragmentInteraction;
 
-public class SettingsActivity extends ActionBarActivity {
+import java.io.File;
 
+public class SettingsActivity extends AppCompatActivity implements OnDirectoryChooserFragmentInteraction {
+
+    private File currentRootDirectory = Environment.getExternalStorageDirectory();
     private Toolbar toolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +38,7 @@ public class SettingsActivity extends ActionBarActivity {
                 .replace(R.id.settings_frame, new SettingsFragment())
                 .commit();
 
+        this.addDirectoryChooserAsFloatingFragment();
 
     }
     @Override
@@ -45,5 +57,19 @@ public class SettingsActivity extends ActionBarActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+    void addDirectoryChooserAsFloatingFragment() {
+        DialogFragment directoryChooserFragment = DirectoryChooserFragment.newInstance(currentRootDirectory);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        directoryChooserFragment.show(transaction, "RDC");
+    }
+
+    @Override
+    public void onEvent(OnDirectoryChosenEvent event) {
+        File directoryChosenByUser = event.getFile();
+    }
+
+    @Override
+    public void onEvent(OnDirectoryCancelEvent event) {
     }
 }

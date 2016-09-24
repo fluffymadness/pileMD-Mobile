@@ -5,11 +5,12 @@ import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends ActionBarActivity
+public class MainActivity extends AppCompatActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     private Toolbar toolbar;                              // Declaring the Toolbar Object
@@ -22,6 +23,7 @@ public class MainActivity extends ActionBarActivity
         toolbar = (Toolbar) findViewById(R.id.toolbar); // Attaching the layout to the toolbar object
         if(toolbar!=null) {
             setSupportActionBar(toolbar);    // Setting toolbar as the ActionBar with setSupportActionBar() call
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
 
         Fragment frag =
