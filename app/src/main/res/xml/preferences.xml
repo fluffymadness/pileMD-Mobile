@@ -4,6 +4,7 @@
     <PreferenceCategory android:title="@string/app_settings">
         <Preference
             android:id="@+id/pref_root_directory"
+            android:summary=""
             android:key="pref_root_directory"
             android:title="@string/pref_root_directory_title"/>
 

@@ -1,13 +1,17 @@
 package com.fluffymadness.pilemdMobile.ui;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -19,10 +23,10 @@ import com.turhanoz.android.reactivedirectorychooser.ui.OnDirectoryChooserFragme
 
 import java.io.File;
 
-public class SettingsActivity extends AppCompatActivity implements OnDirectoryChooserFragmentInteraction {
+public class SettingsActivity extends AppCompatActivity{
 
-    private File currentRootDirectory = Environment.getExternalStorageDirectory();
     private Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +42,7 @@ public class SettingsActivity extends AppCompatActivity implements OnDirectoryCh
                 .replace(R.id.settings_frame, new SettingsFragment())
                 .commit();
 
-        this.addDirectoryChooserAsFloatingFragment();
+
 
     }
     @Override
@@ -58,18 +62,13 @@ public class SettingsActivity extends AppCompatActivity implements OnDirectoryCh
         }
         return super.onOptionsItemSelected(item);
     }
-    void addDirectoryChooserAsFloatingFragment() {
-        DialogFragment directoryChooserFragment = DirectoryChooserFragment.newInstance(currentRootDirectory);
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        directoryChooserFragment.show(transaction, "RDC");
-    }
 
-    @Override
+
     public void onEvent(OnDirectoryChosenEvent event) {
-        File directoryChosenByUser = event.getFile();
+        File currentRootDirectory = event.getFile();
+        Log.d("test",currentRootDirectory.toString());
     }
 
-    @Override
-    public void onEvent(OnDirectoryCancelEvent event) {
-    }
+
+
 }
