@@ -18,18 +18,15 @@ import com.turhanoz.android.reactivedirectorychooser.ui.OnDirectoryChooserFragme
 
 import java.io.File;
 
-import de.greenrobot.event.EventBus;
+public class SettingsFragment extends PreferenceFragment{
 
-public class SettingsFragment extends PreferenceFragment implements OnDirectoryChooserFragmentInteraction {
-
-    private File currentRootDirectory = Environment.getExternalStorageDirectory();
+    private File currentRootDirectory;
     private FragmentActivity myContext;
     private Preference rootDirPref;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EventBus.getDefault().register(this);
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);
         this.setupRootDirPref();
@@ -48,6 +45,7 @@ public class SettingsFragment extends PreferenceFragment implements OnDirectoryC
                 return true;
             }
         });
+        updateRootDirSummary();
     }
 
     void addDirectoryChooserAsFloatingFragment() {
@@ -56,15 +54,16 @@ public class SettingsFragment extends PreferenceFragment implements OnDirectoryC
         directoryChooserFragment.show(transaction, "RDC");
     }
 
-    @Override
-    public void onEvent(OnDirectoryChosenEvent event) {
+    public void updateRootDir(OnDirectoryChosenEvent event) {
         currentRootDirectory = event.getFile();
-        Log.d("test",currentRootDirectory.toString());
-        PreferenceManager.getDefaultSharedPreferences(myContext).edit().putString("pref_root_directory", event.getFile().toString()).commit();
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(myContext).edit();
+        editor.putString("pref_root_directory", currentRootDirectory.toString());
+        editor.commit();
+        updateRootDirSummary();
+    }
+    public void updateRootDirSummary(){
         rootDirPref.setSummary(PreferenceManager.getDefaultSharedPreferences(myContext).getString("pref_root_directory", ""));
+        currentRootDirectory = new File(rootDirPref.getSummary().toString());
     }
 
-    @Override
-    public void onEvent(OnDirectoryCancelEvent event) {
-    }
 }
