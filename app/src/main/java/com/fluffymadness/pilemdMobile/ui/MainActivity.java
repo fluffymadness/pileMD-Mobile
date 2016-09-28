@@ -14,35 +14,57 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     private Toolbar toolbar;                              // Declaring the Toolbar Object
     private NavigationDrawerFragment mNavigationDrawerFragment;
+    private DataModel dataModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         checkIfFirstRun();
-
         toolbar = (Toolbar) findViewById(R.id.toolbar); // Attaching the layout to the toolbar object
         if(toolbar!=null) {
             setSupportActionBar(toolbar);    // Setting toolbar as the ActionBar with setSupportActionBar() call
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
-
         Fragment frag =
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
         if(frag instanceof NavigationDrawerFragment)
             mNavigationDrawerFragment = (NavigationDrawerFragment)frag;
-
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
+
+
+    }
+    @Override
+    protected void onResume(){
+        super.onResume();
+        String path=PreferenceManager.getDefaultSharedPreferences(this).getString("pref_root_directory", "");
+        dataModel = new DataModel(path);
+        loadRackContent();
+
+
+
+    }
+    public void loadRackContent(){
+        String rackDir = PreferenceManager.getDefaultSharedPreferences(this).getString("pref_root_directory","");
+        File rackDirFile = new File(rackDir);
+        if(rackDirFile.exists()) {
+            ArrayList<File> racklist = dataModel.getRacks();
+            if(racklist!=null){
+
+            }
+
+        }
 
 
     }
