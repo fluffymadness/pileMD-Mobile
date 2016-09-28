@@ -5,6 +5,8 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,17 +20,17 @@ import java.util.ArrayList;
  * Created by fluffymadness on 9/28/2016.
  */
 
-public class FolderFragment extends Fragment {
+public class NotebookFragment extends Fragment {
     private DataModel dataModel;
     private FragmentActivity myContext;
-    private String folders;
+    private String rackName;
 
-    private ListView mFolderList;
+    private ListView notebookList;
 
-    public static FolderFragment newInstance(String folder) {
-        FolderFragment f = new FolderFragment();
+    public static NotebookFragment newInstance(String rackName) {
+        NotebookFragment f = new NotebookFragment();
         Bundle args = new Bundle();
-        args.putString("folder", folder);
+        args.putString("rackName", rackName);
         f.setArguments(args);
         return f;
     }
@@ -38,7 +40,7 @@ public class FolderFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_folders, container, false);
+        return inflater.inflate(R.layout.fragment_notebook, container, false);
 
     }
 
@@ -46,14 +48,14 @@ public class FolderFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         super.onCreate(savedInstanceState);
-        folders = getArguments().getString("folder");
+        rackName = getArguments().getString("rackName");
         String path= PreferenceManager.getDefaultSharedPreferences(myContext).getString("pref_root_directory", "");
         dataModel = new DataModel(path);
     }
     @Override
     public void onResume(){
         super.onResume();
-        refreshFolders();
+        refreshNotebooks();
     }
     @Override
     public void onAttach(Activity activity) {
@@ -61,16 +63,16 @@ public class FolderFragment extends Fragment {
         super.onAttach(activity);
     }
 
-    private void refreshFolders(){
+    private void refreshNotebooks(){
         //TODO handle Exception if folder is null
-        ArrayList<File> folders = dataModel.getRackFolders(this.folders);
-        FolderAdapter adapter = new FolderAdapter(myContext, folders);
-        mFolderList = (ListView) getView().findViewById(R.id.folderview);
-        mFolderList.setAdapter(adapter);
-        mFolderList.setOnItemClickListener(new FolderItemClickListener());
+        ArrayList<File> notebooks = dataModel.getRackFolders(this.rackName);
+        NotebookAdapter adapter = new NotebookAdapter(myContext, notebooks);
+        notebookList = (ListView) getView().findViewById(R.id.folderview);
+        notebookList.setAdapter(adapter);
+        notebookList.setOnItemClickListener(new NotebookItemClickListener());
 
     }
-    private class FolderItemClickListener implements ListView.OnItemClickListener {
+    private class NotebookItemClickListener implements ListView.OnItemClickListener {
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -81,5 +83,15 @@ public class FolderFragment extends Fragment {
 
     private void selectItem(int position) {
 
+        String selectedNotebookName = notebookList.getAdapter().getItem(position).toString();
+
+        FragmentManager fm = myContext.getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        NotesFragment fragment = new NotesFragment().newInstance(rackName,selectedNotebookName);
+
+        fragmentTransaction.addToBackStack("NotebookFragment");
+        fragmentTransaction.hide(NotebookFragment.this);
+        fragmentTransaction.add(android.R.id.content, fragment);
+        fragmentTransaction.commit();
     }
 }

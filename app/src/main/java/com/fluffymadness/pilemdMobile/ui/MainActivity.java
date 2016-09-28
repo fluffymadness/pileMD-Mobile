@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity{
 
         Fragment fragment = null;
         String rackName = mDrawerList.getAdapter().getItem(position).toString();
-        fragment = FolderFragment.newInstance(rackName);
+        fragment = NotebookFragment.newInstance(rackName);
         fragment.onAttach(this);
 
 

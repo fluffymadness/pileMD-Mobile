@@ -2,7 +2,11 @@ package com.fluffymadness.pilemdMobile.ui;
 
 import android.util.Log;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -63,5 +67,46 @@ public class DataModel {
         else{
             return null;
         }
+    }
+    public ArrayList<File> getNotes(String rackname, String foldername){
+        File dir = new File(path+"/"+rackname+"/"+foldername);
+        if(dir.exists()) {
+            ArrayList<File> notes = new ArrayList<>();
+
+            for (File f : dir.listFiles()) {
+                if (!f.getName().startsWith(".") ) {
+                    if (!f.isDirectory()) {
+                        notes.add(f);
+                    }
+                }
+            }
+            return notes;
+        }
+        return null;
+    }
+    public String getFileExtension(File filename){
+        return filename.toString().substring(filename.toString().lastIndexOf('.') + 1);
+    }
+    public String getPath(){
+        return this.path;
+    }
+    public String getNote(String fullpath){
+        File file = new File(fullpath);
+        StringBuilder text = new StringBuilder();
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                text.append(line);
+                text.append('\n');
+            }
+            br.close();
+        }
+        catch (IOException e) {
+            //You'll need to add proper error handling here
+            return null;
+        }
+        return text.toString();
     }
 }

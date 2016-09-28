@@ -14,12 +14,12 @@ import java.util.ArrayList;
  * Created by fluffymadness on 9/25/2016.
  */
 
-public class FolderAdapter extends BaseAdapter {
+public class NotebookAdapter extends BaseAdapter {
 
     private Context context;
     private ArrayList<File> data;
 
-    public FolderAdapter(Context context, ArrayList<File> content) {
+    public NotebookAdapter(Context context, ArrayList<File> content) {
         this.context = context;
         this.data = content;
     }
