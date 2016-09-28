@@ -1,72 +1,132 @@
 package com.fluffymadness.pilemdMobile.ui;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.os.Environment;
-import android.preference.Preference;
-import android.preference.PreferenceManager;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
+        import android.content.Intent;
+        import android.content.SharedPreferences;
+        import android.os.Bundle;
+        import android.os.Environment;
+        import android.preference.PreferenceManager;
+        import android.support.v4.app.Fragment;
+        import android.support.v4.app.FragmentManager;
+        import android.support.v4.widget.DrawerLayout;
+        import android.support.v7.app.AppCompatActivity;
+        import android.support.v7.widget.Toolbar;
+        import android.util.Log;
+        import android.view.Menu;
+        import android.view.MenuItem;
+        import android.view.View;
+        import android.widget.AdapterView;
+        import android.widget.ListView;
 
-import java.io.File;
-import java.util.ArrayList;
+        import java.io.File;
+        import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+public class MainActivity extends AppCompatActivity{
 
     private Toolbar toolbar;                              // Declaring the Toolbar Object
-    private NavigationDrawerFragment mNavigationDrawerFragment;
     private DataModel dataModel;
+
+    android.support.v7.app.ActionBarDrawerToggle mDrawerToggle;
+    private DrawerLayout mDrawerLayout;
+    private ListView mDrawerList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        String path=PreferenceManager.getDefaultSharedPreferences(this).getString("pref_root_directory", "");
+        dataModel = new DataModel(path);
         checkIfFirstRun();
-        toolbar = (Toolbar) findViewById(R.id.toolbar); // Attaching the layout to the toolbar object
-        if(toolbar!=null) {
-            setSupportActionBar(toolbar);    // Setting toolbar as the ActionBar with setSupportActionBar() call
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        }
-        Fragment frag =
-                getFragmentManager().findFragmentById(R.id.navigation_drawer);
-        if(frag instanceof NavigationDrawerFragment)
-            mNavigationDrawerFragment = (NavigationDrawerFragment)frag;
-        // Set up the drawer.
-        mNavigationDrawerFragment.setUp(
-                R.id.navigation_drawer,
-                (DrawerLayout) findViewById(R.id.drawer_layout));
+        setupToolBar();
+        refreshRackDrawer();
 
+    }
+    private void refreshRackDrawer(){
 
+        //TODO : handle exception if racklist is null, racklist is null when folder doesn't exist
+
+        ArrayList<File> racklist = dataModel.loadRackContent();
+        RackAdapter adapter = new RackAdapter(this, racklist);
+
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        mDrawerList.setAdapter(adapter);
+        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        setupDrawerToggle();
 
     }
     @Override
     protected void onResume(){
         super.onResume();
-        String path=PreferenceManager.getDefaultSharedPreferences(this).getString("pref_root_directory", "");
-        dataModel = new DataModel(path);
-        loadRackContent();
-
-
-
+        refreshRackDrawer();
     }
-    public void loadRackContent(){
-        String rackDir = PreferenceManager.getDefaultSharedPreferences(this).getString("pref_root_directory","");
-        File rackDirFile = new File(rackDir);
-        if(rackDirFile.exists()) {
-            ArrayList<File> racklist = dataModel.getRacks();
-            if(racklist!=null){
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        mDrawerToggle.syncState();
+    }
 
-            }
+    private void setupToolBar(){
+        toolbar = (Toolbar) findViewById(R.id.toolbar); // Attaching the layout to the toolbar object
+        if(toolbar!=null) {
+            setSupportActionBar(toolbar);    // Setting toolbar as the ActionBar with setSupportActionBar() call
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        }
+    }
+    void setupDrawerToggle(){
+        mDrawerToggle = new android.support.v7.app.ActionBarDrawerToggle(this,mDrawerLayout,toolbar,R.string.app_name, R.string.app_name);
+        //This is necessary to change the icon of the Drawer Toggle upon state change.
+        mDrawerToggle.syncState();
+    }
 
+
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            selectItem(position);
         }
 
+    }
 
+    private void selectItem(int position) {
+
+        Fragment fragment = null;
+        String rackName = mDrawerList.getAdapter().getItem(position).toString();
+        fragment = FolderFragment.newInstance(rackName);
+        fragment.onAttach(this);
+
+
+        if (fragment != null) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
+            mDrawerList.setItemChecked(position, true);
+            mDrawerList.setSelection(position);
+            mDrawerLayout.closeDrawer(mDrawerList);
+
+        } else {
+            Log.e("MainActivity", "Error in creating fragment");
+        }
+    }
+    private void showSettings() {
+        Intent settingsIntent = new Intent(this, SettingsActivity.class);
+        startActivity(settingsIntent);
+    }
+    void checkIfFirstRun(){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if (prefs.getBoolean("firstrun", true)) {
+            File rootDir = Environment.getExternalStorageDirectory();
+            String full = rootDir + "/pilemd";
+            File fullpath = new File(full);
+            if(!(fullpath.exists() && fullpath.isDirectory())){
+                fullpath.mkdirs();
+            }
+
+            prefs.edit().putString("pref_root_directory", rootDir.toString()+"/pilemd").commit();
+            prefs.edit().putBoolean("firstrun", false).commit();
+        }
     }
 
     @Override
@@ -91,42 +151,4 @@ public class MainActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
-
-    private void showSettings() {
-        Intent settingsIntent = new Intent(this, SettingsActivity.class);
-        startActivity(settingsIntent);
-    }
-
-    @Override
-    public void onNavigationDrawerItemSelected(int position) {
-        // update the main content by replacing fragments
-
-        if(position == 0){
-            /*FragmentManager fragmentManager = getFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.container, new InternetFragment())
-                    .commit();*/
-        }
-        if(position == 1){
-
-        }
-        if(position == 2){
-            showSettings();
-        }
-    }
-    void checkIfFirstRun(){
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        if (prefs.getBoolean("firstrun", true)) {
-            File rootDir = Environment.getExternalStorageDirectory();
-            String full = rootDir + "/pilemd";
-            File fullpath = new File(full);
-            if(!(fullpath.exists() && fullpath.isDirectory())){
-                fullpath.mkdirs();
-            }
-
-            prefs.edit().putString("pref_root_directory", rootDir.toString()+"/pilemd").commit();
-            prefs.edit().putBoolean("firstrun", false).commit();
-        }
-    }
-
 }

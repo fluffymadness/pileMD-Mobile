@@ -1,5 +1,7 @@
 package com.fluffymadness.pilemdMobile.ui;
 
+import android.util.Log;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -50,5 +52,16 @@ public class DataModel {
     }
     public boolean createRack(String dir, String name){
         return true;
+    }
+
+    public ArrayList<File> loadRackContent(){
+        ArrayList<File> racklist = getRacks();
+        if(racklist!=null){
+            Log.d("racklist", "racklist is not null");
+            return racklist;
+        }
+        else{
+            return null;
+        }
     }
 }
