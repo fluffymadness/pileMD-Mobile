@@ -1,11 +1,14 @@
-package com.fluffymadness.pilemdMobile.ui;
+package com.fluffymadness.pilemdMobile.model;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.fluffymadness.pilemdMobile.ui.R;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -14,12 +17,12 @@ import java.util.ArrayList;
  * Created by fluffymadness on 9/25/2016.
  */
 
-public class NotebookAdapter extends BaseAdapter {
+public class RackAdapter extends BaseAdapter {
 
     private Context context;
-    private ArrayList<File> data;
+    private ArrayList<SingleRack> data;
 
-    public NotebookAdapter(Context context, ArrayList<File> content) {
+    public RackAdapter(Context context, ArrayList<SingleRack> content) {
         this.context = context;
         this.data = content;
     }
@@ -31,7 +34,7 @@ public class NotebookAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int i) {
-        return data.get(i).getName();
+        return data.get(i);
     }
 
     @Override

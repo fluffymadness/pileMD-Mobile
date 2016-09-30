@@ -6,6 +6,8 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import com.fluffymadness.pilemdMobile.model.DataModel;
+
 import us.feras.mdv.MarkdownView;
 
 /**

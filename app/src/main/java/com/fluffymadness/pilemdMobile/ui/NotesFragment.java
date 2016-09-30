@@ -12,7 +12,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import java.io.File;
+import com.fluffymadness.pilemdMobile.model.DataModel;
+import com.fluffymadness.pilemdMobile.model.NotesAdapter;
+import com.fluffymadness.pilemdMobile.model.SingleNote;
+
 import java.util.ArrayList;
 
 /**
@@ -57,7 +60,7 @@ public class NotesFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-        getActivity().setTitle(R.string.title_fragment_notes);
+        getActivity().setTitle(this.notebookName);
         refreshNotes();
     }
     @Override
@@ -68,7 +71,7 @@ public class NotesFragment extends Fragment {
 
     private void refreshNotes(){
         //TODO handle Exception if notelist is null
-        ArrayList<File> notes = dataModel.getNotes(rackName, notebookName);
+        ArrayList<SingleNote> notes = dataModel.getNotes(rackName, notebookName);
         NotesAdapter adapter = new NotesAdapter(myContext, notes);
         notesList = (ListView) getView().findViewById(R.id.notebookview);
         notesList.setAdapter(adapter);
@@ -85,9 +88,7 @@ public class NotesFragment extends Fragment {
     }
 
     private void selectItem(int position) {
-
-        String noteName = this.notesList.getAdapter().getItem(position).toString();
-        String fullPath = this.dataModel.getPath()+"/"+this.rackName+"/"+this.notebookName+"/"+noteName;
+        String fullPath = ((SingleNote)this.notesList.getAdapter().getItem(position)).getPath();
         Intent intent = new Intent(myContext, ViewNote.class);
         intent.putExtra("notePath",fullPath);
         startActivity(intent);

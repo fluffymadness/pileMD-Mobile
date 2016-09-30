@@ -13,6 +13,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.fluffymadness.pilemdMobile.model.DataModel;
+import com.fluffymadness.pilemdMobile.model.NotebookAdapter;
+import com.fluffymadness.pilemdMobile.model.SingleNotebook;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -67,7 +71,7 @@ public class NotebookFragment extends Fragment {
 
     private void refreshNotebooks(){
         //TODO handle Exception if folder is null
-        ArrayList<File> notebooks = dataModel.getRackFolders(this.rackName);
+        ArrayList<SingleNotebook> notebooks = dataModel.getNotebooks(this.rackName);
         NotebookAdapter adapter = new NotebookAdapter(myContext, notebooks);
         notebookList = (ListView) getView().findViewById(R.id.folderview);
         notebookList.setAdapter(adapter);
@@ -85,8 +89,7 @@ public class NotebookFragment extends Fragment {
 
     private void selectItem(int position) {
 
-        String selectedNotebookName = notebookList.getAdapter().getItem(position).toString();
-
+        String selectedNotebookName = ((SingleNotebook)this.notebookList.getAdapter().getItem(position)).getName();
         FragmentManager fm = myContext.getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fm.beginTransaction();
         NotesFragment fragment = new NotesFragment().newInstance(rackName,selectedNotebookName);

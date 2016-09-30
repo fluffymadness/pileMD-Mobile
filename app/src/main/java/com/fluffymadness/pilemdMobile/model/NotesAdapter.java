@@ -1,4 +1,4 @@
-package com.fluffymadness.pilemdMobile.ui;
+package com.fluffymadness.pilemdMobile.model;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,7 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import java.io.File;
+import com.fluffymadness.pilemdMobile.ui.R;
+
 import java.util.ArrayList;
 
 /**
@@ -17,9 +18,9 @@ import java.util.ArrayList;
 public class NotesAdapter extends BaseAdapter {
 
     private Context context;
-    private ArrayList<File> data;
+    private ArrayList<SingleNote> data;
 
-    public NotesAdapter(Context context, ArrayList<File> content) {
+    public NotesAdapter(Context context, ArrayList<SingleNote> content) {
         this.context = context;
         this.data = content;
     }
@@ -31,7 +32,7 @@ public class NotesAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int i) {
-        return data.get(i).getName();
+        return data.get(i);
     }
 
     @Override
@@ -43,10 +44,13 @@ public class NotesAdapter extends BaseAdapter {
     public View getView(int i, View view, ViewGroup viewGroup) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        View row = inflater.inflate(R.layout.item_row, viewGroup, false);
-        TextView rackName = (TextView) row.findViewById(R.id.rowText);
-        rackName.setText(data.get(i).getName());
-
+        View row = inflater.inflate(R.layout.notes_row, viewGroup, false);
+        TextView noteTitle = (TextView) row.findViewById(R.id.note_title);
+        noteTitle.setText(data.get(i).getName());
+        TextView noteText = (TextView) row.findViewById(R.id.note_text);
+        noteText.setText(data.get(i).getSummary());
+        TextView noteDate  = (TextView) row.findViewById(R.id.note_date);
+        noteDate.setText(data.get(i).getLastModified());
         return row;
     }
 }

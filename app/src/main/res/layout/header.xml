@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="240dp"
+    android:layout_height="190dp"
+    android:background="@color/colorPrimaryLighter"
+    android:orientation="vertical"
+    >
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="80dp"
+        android:text="@string/rack_title"
+        android:textSize="18sp"
+        android:textColor="#FFF"
+        android:textStyle="bold"
+        android:gravity="center_vertical"
+        android:paddingLeft="20dp"
+        android:id="@+id/header_rack_title" />
+
+
+</RelativeLayout>

@@ -11,11 +11,16 @@ package com.fluffymadness.pilemdMobile.ui;
         import android.support.v7.widget.Toolbar;
         import android.util.Log;
         import android.view.Gravity;
+        import android.view.LayoutInflater;
         import android.view.Menu;
         import android.view.MenuItem;
         import android.view.View;
         import android.widget.AdapterView;
         import android.widget.ListView;
+
+        import com.fluffymadness.pilemdMobile.model.DataModel;
+        import com.fluffymadness.pilemdMobile.model.RackAdapter;
+        import com.fluffymadness.pilemdMobile.model.SingleRack;
 
         import java.io.File;
         import java.util.ArrayList;
@@ -38,24 +43,25 @@ public class MainActivity extends AppCompatActivity{
         dataModel = new DataModel(path);
         checkIfFirstRun();
         setupToolBar();
-        refreshRackDrawer();
-
-    }
-    private void refreshRackDrawer(){
-
-        //TODO : handle exception if racklist is null, racklist is null when folder doesn't exist
-
-        ArrayList<File> racklist = dataModel.loadRackContent();
-        RackAdapter adapter = new RackAdapter(this, racklist);
-
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        mDrawerList.setAdapter(adapter);
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
-        setupDrawerToggle();
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        LayoutInflater inflater = getLayoutInflater();
+        View listHeaderView = inflater.inflate(R.layout.header,null, false);
+        mDrawerList.addHeaderView(listHeaderView);
 
+        setupDrawerToggle();
+       // refreshRackDrawer(); //TODO this gets called twice do something about it
+
+    }
+    private void refreshRackDrawer(){
+        //TODO : handle exception if racklist is null, racklist is null when folder doesn't exist
+
+        ArrayList<SingleRack> racklist = dataModel.loadRackContent();
+        RackAdapter adapter = new RackAdapter(this, racklist);
+        mDrawerList.setAdapter(adapter);
+        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
     }
     @Override
     protected void onResume(){
@@ -94,7 +100,7 @@ public class MainActivity extends AppCompatActivity{
     private void selectItem(int position) {
 
         Fragment fragment = null;
-        String rackName = mDrawerList.getAdapter().getItem(position).toString();
+        String rackName = ((SingleRack)mDrawerList.getAdapter().getItem(position)).getName();
         fragment = NotebookFragment.newInstance(rackName);
         fragment.onAttach(this);
 

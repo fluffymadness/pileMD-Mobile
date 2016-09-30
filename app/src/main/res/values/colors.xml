@@ -3,6 +3,7 @@
 <resources>
     <color name="background">#FFFFFF</color>
     <color name="textColor">#000000</color>
+    <color name="colorPrimaryLighter">#67c0b8</color>
     <color name="colorPrimary">#26a69a</color>
     <color name="colorPrimaryDark">#009688</color>
     <color name="accent">#b2dfdb</color>
