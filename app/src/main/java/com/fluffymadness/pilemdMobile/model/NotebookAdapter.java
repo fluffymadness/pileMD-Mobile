@@ -45,10 +45,11 @@ public class NotebookAdapter extends BaseAdapter {
     public View getView(int i, View view, ViewGroup viewGroup) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        View row = inflater.inflate(R.layout.item_row, viewGroup, false);
-        TextView rackName = (TextView) row.findViewById(R.id.rowText);
-        rackName.setText(data.get(i).getName());
-
+        View row = inflater.inflate(R.layout.notebook_row, viewGroup, false);
+        TextView notebookTitle = (TextView) row.findViewById(R.id.notebook_title);
+        notebookTitle.setText(data.get(i).getName());
+        TextView noteCount = (TextView) row.findViewById(R.id.note_count);
+        noteCount.append(": "+String.valueOf(data.get(i).getNoteCount()));
         return row;
     }
 }

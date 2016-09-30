@@ -7,7 +7,7 @@
     android:padding="16dp" >
 
     <TextView
-        android:id="@+id/note_title"
+        android:id="@+id/notebook_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
@@ -16,24 +16,14 @@
         android:textSize="18dp"
         android:textColor="@android:color/black"/>
     <TextView
-        android:id="@+id/note_date"
+        android:id="@+id/note_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_below="@+id/note_title"
-        android:text="Item Name"
+        android:layout_below="@+id/notebook_title"
+        android:text="@string/notebook_count_text"
         android:paddingTop="1dp"
         android:textColor="@android:color/holo_green_dark"
-        android:textAppearance="?android:attr/textAppearanceSmall"        />
-    <TextView
-        android:id="@+id/note_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_below="@+id/note_date"
-        android:text="Item Name"
-        android:paddingTop="4dp"
-        android:textColor="@android:color/darker_gray"
         android:textAppearance="?android:attr/textAppearanceSmall"        />
 
 </RelativeLayout>

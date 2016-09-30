@@ -20,4 +20,7 @@
     <!--Strings for Header-->
     <string name="rack_title">Racks</string>
 
+    <!--Strings for NotebookRow-->
+    <string name="notebook_count_text">Notes</string>
+
 </resources>

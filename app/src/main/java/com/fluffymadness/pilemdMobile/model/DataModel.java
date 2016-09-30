@@ -4,7 +4,9 @@ import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileReader;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -47,7 +49,15 @@ public class DataModel {
             for (File f : dir.listFiles()) {
                 if (!f.getName().startsWith(".")) {
                     if (f.isDirectory()) {
-                        notebooks.add(new SingleNotebook(f.getName(),f.toString()));
+                        File[] files = f.listFiles(new FilenameFilter() {
+                            public boolean accept(File dir, String name) {
+                                if(name.toLowerCase().endsWith(".txt") || name.toLowerCase().endsWith(".md"))
+                                    return true;
+                                return false;
+                            }
+                        });
+                        int numberOfNotes=files.length;
+                        notebooks.add(new SingleNotebook(f.getName(),f.toString(),numberOfNotes));
                     }
                 }
             }
