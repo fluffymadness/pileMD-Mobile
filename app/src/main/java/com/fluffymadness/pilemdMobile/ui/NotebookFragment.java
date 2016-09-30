@@ -51,10 +51,12 @@ public class NotebookFragment extends Fragment {
         rackName = getArguments().getString("rackName");
         String path= PreferenceManager.getDefaultSharedPreferences(myContext).getString("pref_root_directory", "");
         dataModel = new DataModel(path);
+
     }
     @Override
     public void onResume(){
         super.onResume();
+        getActivity().setTitle(R.string.title_fragment_notebooks);
         refreshNotebooks();
     }
     @Override
@@ -88,10 +90,8 @@ public class NotebookFragment extends Fragment {
         FragmentManager fm = myContext.getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fm.beginTransaction();
         NotesFragment fragment = new NotesFragment().newInstance(rackName,selectedNotebookName);
-
-        fragmentTransaction.addToBackStack("NotebookFragment");
-        fragmentTransaction.hide(NotebookFragment.this);
-        fragmentTransaction.add(android.R.id.content, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.replace(((ViewGroup)getView().getParent()).getId(), fragment);
         fragmentTransaction.commit();
     }
 }

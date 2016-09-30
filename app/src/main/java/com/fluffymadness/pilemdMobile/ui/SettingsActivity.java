@@ -30,7 +30,6 @@ public class SettingsActivity extends AppCompatActivity implements OnDirectoryCh
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preferences);
-        setTitle(R.string.settings_title);
         toolbar = (Toolbar) findViewById(R.id.toolbar); // Attaching the layout to the toolbar object
         if(toolbar!=null) {
             setSupportActionBar(toolbar);    // Setting toolbar as the ActionBar with setSupportActionBar() call

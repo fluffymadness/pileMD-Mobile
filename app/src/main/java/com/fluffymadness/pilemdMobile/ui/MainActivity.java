@@ -10,6 +10,7 @@ package com.fluffymadness.pilemdMobile.ui;
         import android.support.v7.app.AppCompatActivity;
         import android.support.v7.widget.Toolbar;
         import android.util.Log;
+        import android.view.Gravity;
         import android.view.Menu;
         import android.view.MenuItem;
         import android.view.View;
@@ -100,7 +101,7 @@ public class MainActivity extends AppCompatActivity{
 
         if (fragment != null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment, "Notebook_Fragment").commit();
 
             mDrawerList.setItemChecked(position, true);
             mDrawerList.setSelection(position);
@@ -150,5 +151,18 @@ public class MainActivity extends AppCompatActivity{
         }
 
         return super.onOptionsItemSelected(item);
+    }
+    @Override
+    public void onBackPressed() {
+
+        if (mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
+            super.onBackPressed();
+        } else {
+            NotebookFragment notebookFragment = (NotebookFragment)getSupportFragmentManager().findFragmentByTag("Notebook_Fragment");
+            if(notebookFragment != null && notebookFragment.isVisible())
+                this.mDrawerLayout.openDrawer(Gravity.LEFT);
+            else
+                super.onBackPressed();
+        }
     }
 }

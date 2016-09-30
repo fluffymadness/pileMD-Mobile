@@ -74,9 +74,13 @@ public class DataModel {
             ArrayList<File> notes = new ArrayList<>();
 
             for (File f : dir.listFiles()) {
-                if (!f.getName().startsWith(".") ) {
+                if (!f.getName().startsWith(".")) {
                     if (!f.isDirectory()) {
-                        notes.add(f);
+                        String extension = getFileExtension(f);
+                        Log.d("ext",extension);
+                        if ((extension.equalsIgnoreCase("txt"))||(extension.equalsIgnoreCase("md"))) {
+                            notes.add(f);
+                        }
                     }
                 }
             }
@@ -108,5 +112,8 @@ public class DataModel {
             return null;
         }
         return text.toString();
+    }
+    public boolean createNote(String path, String name, String text){
+        return true;
     }
 }
