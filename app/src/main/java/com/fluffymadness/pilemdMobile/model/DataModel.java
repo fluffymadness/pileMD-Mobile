@@ -91,8 +91,7 @@ public class DataModel {
                         Log.d("ext",extension);
                         if ((extension.equalsIgnoreCase("txt"))||(extension.equalsIgnoreCase("md"))) {
                             String notepath = dir+"/"+f.getName();
-                            String lastModified = new SimpleDateFormat("MM/dd/yyyy").format(new Date(f.lastModified()));
-                            notes.add(new SingleNote(f.toString(),getNoteTrunc(notepath,5),f.getName(), lastModified));
+                            notes.add(new SingleNote(f.toString(),getNoteTrunc(notepath,5),f.getName(), new Date(f.lastModified())));
                         }
                     }
                 }
@@ -125,7 +124,6 @@ public class DataModel {
                     counter++;
                     if (counter == lines) {
                         text.append("....");
-                        text.append('\n');
                         break finish;
                     }
                 }

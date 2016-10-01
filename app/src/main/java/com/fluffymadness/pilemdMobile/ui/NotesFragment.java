@@ -15,6 +15,7 @@ import android.widget.ListView;
 import com.fluffymadness.pilemdMobile.model.DataModel;
 import com.fluffymadness.pilemdMobile.model.NotesAdapter;
 import com.fluffymadness.pilemdMobile.model.SingleNote;
+import com.fluffymadness.pilemdMobile.model.SortBy;
 
 import java.util.ArrayList;
 
@@ -73,6 +74,7 @@ public class NotesFragment extends Fragment {
         //TODO handle Exception if notelist is null
         ArrayList<SingleNote> notes = dataModel.getNotes(rackName, notebookName);
         NotesAdapter adapter = new NotesAdapter(myContext, notes);
+        adapter.sort(SortBy.DATE);
         notesList = (ListView) getView().findViewById(R.id.notebookview);
         notesList.setAdapter(adapter);
         notesList.setOnItemClickListener(new NotesItemClickListener());

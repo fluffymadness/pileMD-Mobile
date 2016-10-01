@@ -21,6 +21,7 @@ package com.fluffymadness.pilemdMobile.ui;
         import com.fluffymadness.pilemdMobile.model.DataModel;
         import com.fluffymadness.pilemdMobile.model.RackAdapter;
         import com.fluffymadness.pilemdMobile.model.SingleRack;
+        import com.fluffymadness.pilemdMobile.model.SortBy;
 
         import java.io.File;
         import java.util.ArrayList;
@@ -60,6 +61,7 @@ public class MainActivity extends AppCompatActivity{
 
         ArrayList<SingleRack> racklist = dataModel.loadRackContent();
         RackAdapter adapter = new RackAdapter(this, racklist);
+        adapter.sort(SortBy.NAME);
         mDrawerList.setAdapter(adapter);
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
     }

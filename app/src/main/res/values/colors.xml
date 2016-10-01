@@ -6,5 +6,8 @@
     <color name="colorPrimaryLighter">#67c0b8</color>
     <color name="colorPrimary">#26a69a</color>
     <color name="colorPrimaryDark">#009688</color>
+    <color name="listDividerColor">#D3D3D3</color>
+    <color name="listActivatedBackgroundColor">#e6e6e6</color>
+    <color name="listSubColor">#999999</color>
     <color name="accent">#b2dfdb</color>
 </resources>

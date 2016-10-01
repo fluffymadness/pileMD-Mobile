@@ -16,6 +16,7 @@ import android.widget.ListView;
 import com.fluffymadness.pilemdMobile.model.DataModel;
 import com.fluffymadness.pilemdMobile.model.NotebookAdapter;
 import com.fluffymadness.pilemdMobile.model.SingleNotebook;
+import com.fluffymadness.pilemdMobile.model.SortBy;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -73,6 +74,7 @@ public class NotebookFragment extends Fragment {
         //TODO handle Exception if folder is null
         ArrayList<SingleNotebook> notebooks = dataModel.getNotebooks(this.rackName);
         NotebookAdapter adapter = new NotebookAdapter(myContext, notebooks);
+        adapter.sort(SortBy.NAME);
         notebookList = (ListView) getView().findViewById(R.id.folderview);
         notebookList.setAdapter(adapter);
         notebookList.setOnItemClickListener(new NotebookItemClickListener());

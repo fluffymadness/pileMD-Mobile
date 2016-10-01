@@ -4,9 +4,12 @@
     android:layout_height="wrap_content"
     android:background="?android:attr/activatedBackgroundIndicator"
     android:minHeight="?android:attr/listPreferredItemHeightSmall"
-    android:padding="16dp" >
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    >
 
     <TextView
+        android:layout_marginTop="15dp"
         android:id="@+id/note_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -21,11 +24,13 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_below="@+id/note_title"
+        android:textSize="15dp"
         android:text="Item Name"
         android:paddingTop="1dp"
         android:textColor="@android:color/holo_green_dark"
         android:textAppearance="?android:attr/textAppearanceSmall"        />
     <TextView
+        android:layout_marginBottom="15dp"
         android:id="@+id/note_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -33,7 +38,8 @@
         android:layout_below="@+id/note_date"
         android:text="Item Name"
         android:paddingTop="4dp"
-        android:textColor="@android:color/darker_gray"
+        android:textSize="15dp"
+        android:textColor="@color/listSubColor"
         android:textAppearance="?android:attr/textAppearanceSmall"        />
 
 </RelativeLayout>

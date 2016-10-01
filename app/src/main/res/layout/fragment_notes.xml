@@ -10,7 +10,7 @@
         android:layout_gravity="start"
         android:background="#FFFFFF"
         android:choiceMode="singleChoice"
-        android:divider="@android:color/darker_gray"
-        android:dividerHeight="1dp" />
+        android:divider="@drawable/list_divider"
+        android:dividerHeight="1px" />
 
 </LinearLayout>

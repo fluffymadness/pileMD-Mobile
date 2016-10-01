@@ -11,6 +11,8 @@ import com.fluffymadness.pilemdMobile.ui.R;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * Created by fluffymadness on 9/25/2016.
@@ -51,5 +53,20 @@ public class NotebookAdapter extends BaseAdapter {
         TextView noteCount = (TextView) row.findViewById(R.id.note_count);
         noteCount.append(": "+String.valueOf(data.get(i).getNoteCount()));
         return row;
+    }
+    public void sort(SortBy sortBy){
+
+        if(sortBy == SortBy.NAME) {
+            Collections.sort(data, new Comparator<SingleNotebook>() {
+
+                @Override
+                public int compare(SingleNotebook singleNotebook, SingleNotebook t1) {
+                    return singleNotebook.getName().compareTo(t1.getName());
+                }
+
+
+            });
+        }
+        this.notifyDataSetChanged();
     }
 }

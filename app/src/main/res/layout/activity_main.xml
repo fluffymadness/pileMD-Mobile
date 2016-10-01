@@ -38,8 +38,8 @@
         android:layout_gravity="start"
         android:background="#FFFFFF"
         android:choiceMode="singleChoice"
-        android:divider="@android:color/darker_gray"
-        android:dividerHeight="1dp"
+        android:divider="@color/listDividerColor"
+        android:dividerHeight="1px"
         />
 
 </android.support.v4.widget.DrawerLayout>

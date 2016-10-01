@@ -2,16 +2,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/fragment_notebook">
+    android:id="@+id/fragment_notebook"
+    android:background="#FFFFFF">
 
     <ListView
+        android:paddingTop="5dp"
         android:id="@+id/folderview"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="#FFFFFF"
         android:choiceMode="singleChoice"
-        android:divider="@android:color/darker_gray"
-        android:dividerHeight="1dp" />
+        android:divider="@drawable/list_divider"
+        android:dividerHeight="1px" />
 
 </LinearLayout>
