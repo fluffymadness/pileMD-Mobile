@@ -5,7 +5,9 @@ import android.util.Log;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -141,6 +143,19 @@ public class DataModel {
         return text.toString();
     }
     public boolean createNote(String path, String name, String text){
+
+        String filename = path + "/" + name + ".md";
+        File filepath = new File(filename);  // file path to save
+
+        FileWriter writer = null;
+        try {
+            writer = new FileWriter(filepath);
+            writer.append(text);
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return true;
     }
 }

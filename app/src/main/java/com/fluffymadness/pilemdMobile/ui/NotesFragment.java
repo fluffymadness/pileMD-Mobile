@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
@@ -28,6 +29,7 @@ public class NotesFragment extends Fragment {
     private FragmentActivity myContext;
     private String rackName;
     private String notebookName;
+    private FloatingActionButton addNoteButton;
 
     private ListView notesList;
 
@@ -45,7 +47,10 @@ public class NotesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_notes, container, false);
+        View view = inflater.inflate(R.layout.fragment_notes, container, false);
+        addNoteButton = (FloatingActionButton)view.findViewById(R.id.addNoteButton);
+        addNoteButton.setOnClickListener(new FloatingButtonClickListener());
+        return view;
 
     }
 
@@ -57,6 +62,7 @@ public class NotesFragment extends Fragment {
         notebookName = getArguments().getString("notebookName");
         String path= PreferenceManager.getDefaultSharedPreferences(myContext).getString("pref_root_directory", "");
         dataModel = new DataModel(path);
+
     }
     @Override
     public void onResume(){
@@ -64,6 +70,13 @@ public class NotesFragment extends Fragment {
         getActivity().setTitle(this.notebookName);
         refreshNotes();
     }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        refreshNotes();
+    }
+
     @Override
     public void onAttach(Activity activity) {
         myContext=(FragmentActivity) activity;
@@ -79,6 +92,19 @@ public class NotesFragment extends Fragment {
         notesList.setAdapter(adapter);
         notesList.setOnItemClickListener(new NotesItemClickListener());
 
+    }
+
+    private void addNote(){
+        String folderpath = this.rackName+"/"+this.notebookName;
+        Intent intent = new Intent(myContext, EditorActivity.class);
+        intent.putExtra("folderPath",folderpath);
+        startActivity(intent);
+    }
+    private class FloatingButtonClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            addNote();
+        }
     }
     private class NotesItemClickListener implements ListView.OnItemClickListener {
 

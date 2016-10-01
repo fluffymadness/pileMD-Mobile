@@ -16,11 +16,15 @@
     <string name="title_activity_settings">Settings</string>
     <string name="title_fragment_notebooks">Notebooks</string>
     <string name="title_fragment_notes">Notes</string>
+    <string name="title_add_note">Add Note</string>
 
     <!--Strings for Header-->
     <string name="rack_title">Racks</string>
 
     <!--Strings for NotebookRow-->
     <string name="notebook_count_text">Notes</string>
+
+    <!--Strings for MarkdownEditor-->
+    <string name="add_note_hint">What is on your mind?</string>
 
 </resources>
