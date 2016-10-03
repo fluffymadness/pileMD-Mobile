@@ -17,6 +17,8 @@
     <string name="title_fragment_notebooks">Notebooks</string>
     <string name="title_fragment_notes">Notes</string>
     <string name="title_add_note">Add Note</string>
+    <string name="title_edit_note">Edit Note</string>
+    <string name="title_view_note">View Note</string>
 
     <!--Strings for Header-->
     <string name="rack_title">Racks</string>

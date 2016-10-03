@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import android.widget.ListView;
 
 import com.fluffymadness.pilemdMobile.model.DataModel;
 import com.fluffymadness.pilemdMobile.model.NotesAdapter;
+import com.fluffymadness.pilemdMobile.model.NotesEditListernerInterface;
 import com.fluffymadness.pilemdMobile.model.SingleNote;
 import com.fluffymadness.pilemdMobile.model.SortBy;
 
@@ -24,7 +26,7 @@ import java.util.ArrayList;
  * Created by fluffymadness on 9/28/2016.
  */
 
-public class NotesFragment extends Fragment {
+public class NotesFragment extends Fragment implements NotesEditListernerInterface {
     private DataModel dataModel;
     private FragmentActivity myContext;
     private String rackName;
@@ -86,7 +88,7 @@ public class NotesFragment extends Fragment {
     private void refreshNotes(){
         //TODO handle Exception if notelist is null
         ArrayList<SingleNote> notes = dataModel.getNotes(rackName, notebookName);
-        NotesAdapter adapter = new NotesAdapter(myContext, notes);
+        NotesAdapter adapter = new NotesAdapter(myContext, this, notes);
         adapter.sort(SortBy.DATE);
         notesList = (ListView) getView().findViewById(R.id.notebookview);
         notesList.setAdapter(adapter);
@@ -100,6 +102,16 @@ public class NotesFragment extends Fragment {
         intent.putExtra("folderPath",folderpath);
         startActivity(intent);
     }
+
+    @Override
+    public void editNote(String name) {
+        String folderpath = this.rackName+"/"+this.notebookName;
+        Intent intent = new Intent(myContext, EditorActivity.class);
+        intent.putExtra("folderPath",folderpath);
+        intent.putExtra("noteName", name);
+        startActivity(intent);
+    }
+
     private class FloatingButtonClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {

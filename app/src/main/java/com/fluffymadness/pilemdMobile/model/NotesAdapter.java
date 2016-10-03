@@ -1,10 +1,14 @@
 package com.fluffymadness.pilemdMobile.model;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.fluffymadness.pilemdMobile.ui.R;
@@ -17,14 +21,16 @@ import java.util.Comparator;
  * Created by fluffymadness on 9/25/2016.
  */
 
-public class NotesAdapter extends BaseAdapter {
+public class NotesAdapter extends BaseAdapter{
 
     private Context context;
+    private NotesEditListernerInterface fragment;
     private ArrayList<SingleNote> data;
 
-    public NotesAdapter(Context context, ArrayList<SingleNote> content) {
+    public NotesAdapter(Context context, NotesEditListernerInterface fragment,ArrayList<SingleNote> content) {
         this.context = context;
         this.data = content;
+        this.fragment = fragment;
     }
 
     @Override
@@ -53,6 +59,14 @@ public class NotesAdapter extends BaseAdapter {
         noteText.setText(data.get(i).getSummary());
         TextView noteDate  = (TextView) row.findViewById(R.id.note_date);
         noteDate.setText(data.get(i).getLastModifiedString());
+        ImageView imageView = (ImageView) row.findViewById(R.id.editIcon);
+        imageView.setImageResource(R.drawable.ic_mode_edit_black_24dp);
+        imageView.setOnClickListener(new NotesEditClickListener(data.get(i).getName()+"."+data.get(i).getExtension()){
+            @Override
+            public void onClick(View view) {
+                fragment.editNote(this.getName());
+            }
+        });
         return row;
     }
     public void sort(SortBy sortBy){
@@ -80,5 +94,23 @@ public class NotesAdapter extends BaseAdapter {
             });
         }
         this.notifyDataSetChanged();
+    }
+
+}
+class NotesEditClickListener implements ImageView.OnClickListener {
+
+    private String name;
+    public NotesEditClickListener(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public void onClick(View v)
+    {
+        //read your lovely variable
+    }
+
+    public String getName(){
+        return this.name;
     }
 }

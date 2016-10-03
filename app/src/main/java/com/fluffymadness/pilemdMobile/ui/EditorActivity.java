@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.widget.EditText;
 
 import com.fluffymadness.pilemdMobile.model.DataModel;
@@ -23,6 +24,7 @@ import us.feras.mdv.MarkdownView;
 public class EditorActivity extends AppCompatActivity {
 
     private String folderpath;
+    private String noteToEdit;
     private Toolbar toolbar;
     private DataModel dataModel;
     private EditText editTextField;
@@ -39,11 +41,22 @@ public class EditorActivity extends AppCompatActivity {
         Intent intent = getIntent();
         folderpath = path + "/" + intent.getStringExtra("folderPath");
         editTextField = (EditText)findViewById(R.id.edit_text);
+
+        noteToEdit = intent.getStringExtra("noteName");
     }
     @Override
     protected void onResume(){
         super.onResume();
-        this.setTitle(R.string.title_add_note);
+        if(noteToEdit != null){
+            this.setTitle(R.string.title_edit_note);
+            Log.d("notetoedit",noteToEdit);
+            String noteText = dataModel.getNote(folderpath+"/"+noteToEdit);
+            Log.d("notetext",noteText);
+            editTextField.setText(noteText);
+        }
+        else{
+            this.setTitle(R.string.title_add_note);
+        }
     }
     private void setupToolBar(){
         toolbar = (Toolbar) findViewById(R.id.toolbar); // Attaching the layout to the toolbar object

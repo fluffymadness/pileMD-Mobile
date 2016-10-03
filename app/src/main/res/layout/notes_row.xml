@@ -42,4 +42,21 @@
         android:textColor="@color/listSubColor"
         android:textAppearance="?android:attr/textAppearanceSmall"        />
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_vertical"
+        android:layout_alignParentRight="true">
+        <ImageView
+            android:id="@+id/editIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:paddingTop="16dp"
+            />
+
+    </LinearLayout>
+
+
 </RelativeLayout>

@@ -11,6 +11,7 @@ For now it builds and hast the following features
 - basic folderbrowsing
 - alphabetical sorting (racks, notebooks, notes)
 - note-detail list-view
-- basic note creation (no editing of created notes for now)
+- basic note creation
+- basic notes editing
 
 It is in alpha state, so some features are missing or do not work as expected.

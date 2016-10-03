@@ -145,7 +145,7 @@ public class DataModel {
     public boolean createNote(String path, String name, String text){
 
         String filename = path + "/" + name + ".md";
-        File filepath = new File(filename);  // file path to save
+        File filepath = new File(filename);
 
         FileWriter writer = null;
         try {
@@ -158,4 +158,27 @@ public class DataModel {
         }
         return true;
     }
+    /*
+    private File checkFileDate(String path, Date timeOfStartedEdit){
+        File filepath = new File(path);
+        if(filepath.exists()){
+
+        }
+
+    }
+    private File getValidFilename(String filename) {
+        int filecounter = 0;
+        File filepath = new File(filename);
+        if (filepath.exists()){
+            filecounter++;
+            while (filepath.exists()) {
+                filepath = new File(filename + "_" + filecounter);
+            }
+            return filepath;
+        }
+        else{
+            return filepath;
+        }
+
+    }*/
 }
