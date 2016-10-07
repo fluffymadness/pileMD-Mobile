@@ -1,12 +1,15 @@
 package com.fluffymadness.pilemdMobile.ui;
 
 import android.app.Activity;
+import android.support.v4.app.DialogFragment;
 import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,10 +28,11 @@ import java.util.ArrayList;
  * Created by fluffymadness on 9/28/2016.
  */
 
-public class NotebookFragment extends Fragment {
+public class NotebookFragment extends Fragment implements CreateNotebookDialog.CreateNotebookDialogListener {
     private DataModel dataModel;
     private FragmentActivity myContext;
     private String rackName;
+    private FloatingActionButton addNotebookButton;
 
     private ListView notebookList;
 
@@ -45,7 +49,10 @@ public class NotebookFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_notebook, container, false);
+        View view = inflater.inflate(R.layout.fragment_notebook, container, false);
+        addNotebookButton = (FloatingActionButton)view.findViewById(R.id.addFolderButton);
+        addNotebookButton.setOnClickListener(new NotebookFragment.FloatingButtonClickListener());
+        return view;
 
     }
 
@@ -80,12 +87,36 @@ public class NotebookFragment extends Fragment {
         notebookList.setOnItemClickListener(new NotebookItemClickListener());
 
     }
+
+    @Override
+    public void onDialogPositiveClick(CreateNotebookDialog dialog) {
+       Log.d("bla",dialog.getNotebookName()) ;
+    }
+
+    @Override
+    public void onDialogNegativeClick(CreateNotebookDialog dialog) {
+
+    }
+
     private class NotebookItemClickListener implements ListView.OnItemClickListener {
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             selectItem(position);
         }
+
+    }
+    private class FloatingButtonClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            addNotebook();
+        }
+    }
+
+    private void addNotebook(){
+        CreateNotebookDialog dialog = new CreateNotebookDialog();
+        dialog.setDialogListener(this);
+        dialog.show(myContext.getSupportFragmentManager(), "CreateNotebookDialogFragment");
 
     }
 

@@ -13,5 +13,6 @@ For now it builds and hast the following features
 - note-detail list-view
 - basic note creation
 - basic notes editing
+- basic note viewing
 
 It is in alpha state, so some features are missing or do not work as expected.

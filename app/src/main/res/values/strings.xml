@@ -29,4 +29,8 @@
     <!--Strings for MarkdownEditor-->
     <string name="add_note_hint">What is on your mind?</string>
 
+    <!--Strngs for CreateNotebookDialog-->
+    <string name="create_notebook">Create</string>
+    <string name="cancel">Cancel</string>
+
 </resources>
