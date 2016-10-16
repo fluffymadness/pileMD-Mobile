@@ -119,6 +119,7 @@ public class NotesFragment extends Fragment implements NotesEditListernerInterfa
         ArrayList<SingleNote> notes = dataModel.getNotes(rackName, notebookName);
         adapter = new NotesAdapter(getActivity(),0, notes);
         adapter.sort(SortBy.DATE);
+        adapter.setCallBack(this);
         notesList = (ListView) getView().findViewById(R.id.notesview);
         notesList.setAdapter(adapter);
         notesList.setOnItemClickListener(new NotesItemClickListener());

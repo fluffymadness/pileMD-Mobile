@@ -1,5 +1,6 @@
 package com.fluffymadness.pilemdMobile.model;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,15 +24,20 @@ import java.util.Comparator;
  * Created by fluffymadness on 9/25/2016.
  */
 
-public class NotesAdapter extends ArrayAdapter{
+public class NotesAdapter extends ArrayAdapter implements NotesAdapterCallback{
 
     private Context context;
     private ArrayList<SingleNote> data;
+    NotesEditListernerInterface callback;
 
     public NotesAdapter(Context context, int resource, ArrayList<SingleNote> content) {
         super(context, resource, content);
         this.context = context;
         this.data = content;
+    }
+
+    public void setCallBack(NotesEditListernerInterface callback){
+        this.callback=callback;
     }
 
     @Override
@@ -65,7 +71,8 @@ public class NotesAdapter extends ArrayAdapter{
         imageView.setOnClickListener(new NotesEditClickListener(data.get(i).getName()+"."+data.get(i).getExtension()){
             @Override
             public void onClick(View view) {
-                ((NotesEditListernerInterface)context).editNote(this.getName());
+                if(callback!=null)
+                    (callback).editNote(this.getName());
             }
         });
         return row;
@@ -114,4 +121,9 @@ class NotesEditClickListener implements ImageView.OnClickListener {
     public String getName(){
         return this.name;
     }
+}
+
+interface NotesAdapterCallback{
+  void setCallBack(NotesEditListernerInterface callback);
+
 }
