@@ -11,8 +11,38 @@ For now it builds and hast the following features
 - basic folderbrowsing
 - alphabetical sorting (racks, notebooks, notes)
 - note-detail list-view
+
+Notes Functionality
+
 - basic note creation
 - basic notes editing
 - basic note viewing
+- notes deletion
+- basic conflict handling (when creating note with same filename, change filename of existing note etc)
+
+Notebook Functionality
+
+- Notebook Creation
+- Notebook Deletion
+
+Rack Functionality
+
+- Rack Viewing
 
 It is in alpha state, so some features are missing or do not work as expected.
+
+
+TODO
+
+Racks
+
+- Add functionality for creating/renaming/removing racks
+
+Notebooks
+
+- Add functionality for renaming notebooks
+- Add are you sure dialog when removing a notebooks
+
+Notes
+
+- Add are your sure dialog when removing a note
