@@ -5,6 +5,7 @@ import android.util.Log;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -92,7 +93,7 @@ public class DataModel {
                         String extension = getFileExtension(f);
                         if ((extension.equalsIgnoreCase("txt"))||(extension.equalsIgnoreCase("md"))) {
                             String notepath = dir+"/"+f.getName();
-                            notes.add(new SingleNote(f.toString(),getNoteTrunc(notepath,5),f.getName(), new Date(f.lastModified())));
+                            notes.add(new SingleNote(f.toString(),getNoteTrunc(notepath,1,5),f.getName(), new Date(f.lastModified())));
                         }
                     }
                 }
@@ -109,9 +110,36 @@ public class DataModel {
     }
 
     public String getNote(String fullpath){
-        return getNoteTrunc(fullpath, 0);
+        return getNoteTrunc(fullpath, 0,0);
     }
-    private String getNoteTrunc(String fullpath, int lines){
+
+    public String getNoteMarkdown (String fullpath){
+        File file = new File(fullpath);
+        StringBuilder text = new StringBuilder();
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+            int counter=0;
+
+            while ((line = br.readLine()) != null) {
+                if(counter==0) {
+                    text.append("##");
+                    counter++;
+                }
+                text.append(line);
+                text.append("  \n");
+            }
+            br.close();
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        return text.toString();
+    }
+    private String getNoteTrunc(String fullpath, int fromLine, int toLine ){
         int counter = 0;
         File file = new File(fullpath);
         StringBuilder text = new StringBuilder();
@@ -121,17 +149,17 @@ public class DataModel {
 
             finish:
             while ((line = br.readLine()) != null) {
-                if(lines != 0) {
+                if(counter >= fromLine) {
+                    text.append(line);
+                    text.append("\n");
+                }
+                if(toLine !=0) {
                     counter++;
-                    if (counter == lines) {
+                    if (counter == toLine) {
                         text.append("....");
                         break finish;
                     }
                 }
-
-                text.append(line);
-                text.append('\n');
-
             }
             br.close();
         }

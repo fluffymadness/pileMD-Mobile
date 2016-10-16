@@ -33,7 +33,8 @@ public class ViewNote extends AppCompatActivity {
         MarkdownView markdownView = (MarkdownView) findViewById(R.id.markdownView);
 
         //TODO error handling if null
-        markdownView.loadMarkdown(dataModel.getNote(notepath));
+        markdownView.loadMarkdown(dataModel.getNoteMarkdown(notepath),"file:///android_asset/markdownview.css");
+        getSupportActionBar().hide();
 
     }
     private void setupToolBar(){
