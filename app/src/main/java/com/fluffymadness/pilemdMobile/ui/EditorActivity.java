@@ -13,8 +13,7 @@ import com.fluffymadness.pilemdMobile.model.DataModel;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
-
-import us.feras.mdv.MarkdownView;
+import java.util.Date;
 
 
 /**
@@ -28,6 +27,8 @@ public class EditorActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private DataModel dataModel;
     private EditText editTextField;
+    private Date fileLastModifiedDate;
+    private String previousNoteTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,20 +44,25 @@ public class EditorActivity extends AppCompatActivity {
         editTextField = (EditText)findViewById(R.id.edit_text);
 
         noteToEdit = intent.getStringExtra("noteName");
+        loadNote();
     }
     @Override
     protected void onResume(){
         super.onResume();
+
+    }
+    private void loadNote(){
         if(noteToEdit != null){
             this.setTitle(R.string.title_edit_note);
-            Log.d("notetoedit",noteToEdit);
             String noteText = dataModel.getNote(folderpath+"/"+noteToEdit);
-            Log.d("notetext",noteText);
+            this.fileLastModifiedDate = dataModel.getLastModifiedDate(folderpath+"/"+noteToEdit);
             editTextField.setText(noteText);
+            this.previousNoteTitle = getNoteTitle(noteText);
         }
         else{
             this.setTitle(R.string.title_add_note);
         }
+
     }
     private void setupToolBar(){
         toolbar = (Toolbar) findViewById(R.id.toolbar); // Attaching the layout to the toolbar object
@@ -67,9 +73,16 @@ public class EditorActivity extends AppCompatActivity {
     }
     private void saveNote(){
         String note = editTextField.getText().toString();
-        if(note.length()!=0){
+        if(this.noteToEdit != null){
+            Log.d("bla",previousNoteTitle);
+            Log.d("blo",getNoteTitle(note));
+            dataModel.modifyNote(folderpath,previousNoteTitle,getNoteTitle(note),note,this.fileLastModifiedDate);
+        }
+        else if(note.length()!=0){
+            Log.d("create","createnote");
             dataModel.createNote(folderpath,getNoteTitle(note),note);
         }
+
         //TODO, only overwrite when date is newer then the already synced version, else make a copy with _1
         //also some exception handling would be nice here
     }
@@ -82,11 +95,6 @@ public class EditorActivity extends AppCompatActivity {
             e.printStackTrace();
             return "No Title";
         }
-    }
-    @Override
-    protected void onStop(){
-        super.onStop();
-        saveNote();
     }
     @Override
     protected void onDestroy(){

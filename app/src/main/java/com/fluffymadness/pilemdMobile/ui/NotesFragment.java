@@ -1,14 +1,16 @@
 package com.fluffymadness.pilemdMobile.ui;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.FileObserver;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -28,10 +30,11 @@ import java.util.ArrayList;
 
 public class NotesFragment extends Fragment implements NotesEditListernerInterface {
     private DataModel dataModel;
-    private FragmentActivity myContext;
     private String rackName;
     private String notebookName;
     private FloatingActionButton addNoteButton;
+    private FileObserver directoryObserver;
+    private NotesAdapter adapter;
 
     private ListView notesList;
 
@@ -62,43 +65,69 @@ public class NotesFragment extends Fragment implements NotesEditListernerInterfa
         super.onCreate(savedInstanceState);
         rackName = getArguments().getString("rackName");
         notebookName = getArguments().getString("notebookName");
-        String path= PreferenceManager.getDefaultSharedPreferences(myContext).getString("pref_root_directory", "");
+        String path= PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("pref_root_directory", "");
         dataModel = new DataModel(path);
+        /*directoryObserver = new FileObserver(path) {
+            @Override
+            public void onEvent(int i, String s) {
+                Log.d("event","fileobserverevent");
+                getActivity().runOnUiThread(new Runnable(){
+                    @Override
+                    public void run() {
+                        NotesFragment.this.refreshNotes();
+                    }
+
+
+                });
+            }
+        };
+        directoryObserver.startWatching();*/
 
     }
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+        if (v.getId()==R.id.notesview) {
+                menu.add(Menu.NONE, 0, 0, R.string.delete_note);
+        }
+    }
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+        int menuItemIndex = item.getItemId();
+        Log.d("pos",String.valueOf(info.position));
+        if(menuItemIndex == 0){
+            String path =((SingleNote)adapter.getItem(info.position)).getPath();
+            dataModel.deleteNote(path);
+            adapter.remove(adapter.getItem(info.position));
+            adapter.notifyDataSetChanged();
+        }
+
+        return true;
+    }
+
     @Override
     public void onResume(){
         super.onResume();
+        Log.d("gets called","gets called");
         getActivity().setTitle(this.notebookName);
         refreshNotes();
-    }
-
-    @Override
-    public void onStart(){
-        super.onStart();
-        refreshNotes();
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        myContext=(FragmentActivity) activity;
-        super.onAttach(activity);
     }
 
     private void refreshNotes(){
         //TODO handle Exception if notelist is null
         ArrayList<SingleNote> notes = dataModel.getNotes(rackName, notebookName);
-        NotesAdapter adapter = new NotesAdapter(myContext, this, notes);
+        adapter = new NotesAdapter(getActivity(),0, notes);
         adapter.sort(SortBy.DATE);
-        notesList = (ListView) getView().findViewById(R.id.notebookview);
+        notesList = (ListView) getView().findViewById(R.id.notesview);
         notesList.setAdapter(adapter);
         notesList.setOnItemClickListener(new NotesItemClickListener());
-
+        registerForContextMenu(notesList);
     }
 
     private void addNote(){
         String folderpath = this.rackName+"/"+this.notebookName;
-        Intent intent = new Intent(myContext, EditorActivity.class);
+        Intent intent = new Intent(getActivity(), EditorActivity.class);
         intent.putExtra("folderPath",folderpath);
         startActivity(intent);
     }
@@ -106,7 +135,7 @@ public class NotesFragment extends Fragment implements NotesEditListernerInterfa
     @Override
     public void editNote(String name) {
         String folderpath = this.rackName+"/"+this.notebookName;
-        Intent intent = new Intent(myContext, EditorActivity.class);
+        Intent intent = new Intent(getActivity(), EditorActivity.class);
         intent.putExtra("folderPath",folderpath);
         intent.putExtra("noteName", name);
         startActivity(intent);
@@ -129,7 +158,7 @@ public class NotesFragment extends Fragment implements NotesEditListernerInterfa
 
     private void selectItem(int position) {
         String fullPath = ((SingleNote)this.notesList.getAdapter().getItem(position)).getPath();
-        Intent intent = new Intent(myContext, ViewNote.class);
+        Intent intent = new Intent(getActivity(), ViewNote.class);
         intent.putExtra("notePath",fullPath);
         startActivity(intent);
     }

@@ -4,11 +4,13 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.fluffymadness.pilemdMobile.ui.R;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -17,12 +19,13 @@ import java.util.Comparator;
  * Created by fluffymadness on 9/25/2016.
  */
 
-public class RackAdapter extends BaseAdapter {
+public class RackAdapter extends ArrayAdapter {
 
     private Context context;
     private ArrayList<SingleRack> data;
 
-    public RackAdapter(Context context, ArrayList<SingleRack> content) {
+    public RackAdapter(Context context, int resource,ArrayList<SingleRack> content) {
+        super(context,resource,content);
         this.context = context;
         this.data = content;
     }

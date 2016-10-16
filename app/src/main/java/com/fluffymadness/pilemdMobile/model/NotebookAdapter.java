@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
@@ -18,12 +19,13 @@ import java.util.Comparator;
  * Created by fluffymadness on 9/25/2016.
  */
 
-public class NotebookAdapter extends BaseAdapter {
+public class NotebookAdapter extends ArrayAdapter {
 
     private Context context;
     private ArrayList<SingleNotebook> data;
 
-    public NotebookAdapter(Context context, ArrayList<SingleNotebook> content) {
+    public NotebookAdapter(Context context, int resource, ArrayList<SingleNotebook> content) {
+        super(context,resource,content);
         this.context = context;
         this.data = content;
     }
@@ -69,4 +71,5 @@ public class NotebookAdapter extends BaseAdapter {
         }
         this.notifyDataSetChanged();
     }
+
 }

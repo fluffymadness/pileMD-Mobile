@@ -33,4 +33,10 @@
     <string name="create_notebook">Create</string>
     <string name="cancel">Cancel</string>
 
+    <!--Strings for NotesFragment Context Menu-->
+    <string name="delete_note">Delete Note</string>
+
+    <!--Strings for NotebookFragment Context Menu-->
+    <string name="delete_notebook">Delete Notebook</string>
+
 </resources>

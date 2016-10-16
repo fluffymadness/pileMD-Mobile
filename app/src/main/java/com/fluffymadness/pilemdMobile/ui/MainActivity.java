@@ -8,6 +8,7 @@ package com.fluffymadness.pilemdMobile.ui;
         import android.support.v4.app.FragmentManager;
         import android.support.v4.widget.DrawerLayout;
         import android.support.v7.app.AppCompatActivity;
+        import android.support.v4.app.FragmentTransaction;
         import android.support.v7.widget.Toolbar;
         import android.util.Log;
         import android.view.Gravity;
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity{
         mDrawerList.addHeaderView(listHeaderView);
 
         setupDrawerToggle();
+       // getSupportFragmentManager().addOnBackStackChangedListener(getListener());
        // refreshRackDrawer(); //TODO this gets called twice do something about it
 
     }
@@ -60,7 +62,7 @@ public class MainActivity extends AppCompatActivity{
         //TODO : handle exception if racklist is null, racklist is null when folder doesn't exist
 
         ArrayList<SingleRack> racklist = dataModel.loadRackContent();
-        RackAdapter adapter = new RackAdapter(this, racklist);
+        RackAdapter adapter = new RackAdapter(this, 0, racklist);
         adapter.sort(SortBy.NAME);
         mDrawerList.setAdapter(adapter);
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
@@ -104,13 +106,13 @@ public class MainActivity extends AppCompatActivity{
         Fragment fragment = null;
         String rackName = ((SingleRack)mDrawerList.getAdapter().getItem(position)).getName();
         fragment = NotebookFragment.newInstance(rackName);
-        fragment.onAttach(this);
 
 
         if (fragment != null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment, "Notebook_Fragment").commit();
-
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.content_frame, fragment, "Notebook_Fragment");
+            transaction.commit();
             mDrawerList.setItemChecked(position, true);
             mDrawerList.setSelection(position);
             mDrawerLayout.closeDrawer(mDrawerList);
@@ -172,5 +174,22 @@ public class MainActivity extends AppCompatActivity{
             else
                 super.onBackPressed();
         }
+    }
+    private FragmentManager.OnBackStackChangedListener getListener() {
+        FragmentManager.OnBackStackChangedListener result = new FragmentManager.OnBackStackChangedListener() {
+            public void onBackStackChanged() {
+                FragmentManager manager = getSupportFragmentManager();
+                if (manager != null) {
+                    int backStackEntryCount = manager.getBackStackEntryCount();
+                    if (backStackEntryCount == 0) {
+                        finish();
+                    }
+                    Fragment fragment = manager.getFragments()
+                            .get(backStackEntryCount - 1);
+                    fragment.onResume();
+                }
+            }
+        };
+        return result;
     }
 }

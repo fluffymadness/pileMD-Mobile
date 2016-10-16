@@ -18,7 +18,7 @@ import android.widget.EditText;
 public class CreateNotebookDialog extends DialogFragment {
 
     public interface CreateNotebookDialogListener {
-        void onDialogPositiveClick(CreateNotebookDialog dialog);
+        void onDialogPositiveClick(CreateNotebookDialog dialog, String text);
         void onDialogNegativeClick(CreateNotebookDialog dialog);
     }
 
@@ -38,28 +38,23 @@ public class CreateNotebookDialog extends DialogFragment {
 
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
-        builder.setView(inflater.inflate(R.layout.create_notebook_dialog, null))
-                // Add action buttons
-                .setPositiveButton(R.string.create_notebook, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        if(mListener!=null)
-                            Log.d("sdf","notnull");
-                            mListener.onDialogPositiveClick(CreateNotebookDialog.this);
-                    }
-                })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        if(mListener!=null)
-                            mListener.onDialogNegativeClick(CreateNotebookDialog.this);
-                    }
-                });
+        final View view = inflater.inflate(R.layout.create_notebook_dialog, null);
+        builder.setView(view);
+        builder.setPositiveButton(R.string.create_notebook, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                if(mListener!=null) {
+                    EditText notebookName = (EditText) view.findViewById(R.id.folder_name);
+                    mListener.onDialogPositiveClick(CreateNotebookDialog.this, notebookName.getText().toString());
+                }
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                if(mListener!=null)
+                    mListener.onDialogNegativeClick(CreateNotebookDialog.this);
+            }
+        });
         return builder.create();
-    }
-    public String getNotebookName(){
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.create_notebook_dialog, null);
-        EditText notebookName=(EditText)view.findViewById(R.id.folder_name);
-        return notebookName.getText().toString();
     }
 }

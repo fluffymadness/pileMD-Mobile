@@ -90,7 +90,6 @@ public class DataModel {
                 if (!f.getName().startsWith(".")) {
                     if (!f.isDirectory()) {
                         String extension = getFileExtension(f);
-                        Log.d("ext",extension);
                         if ((extension.equalsIgnoreCase("txt"))||(extension.equalsIgnoreCase("md"))) {
                             String notepath = dir+"/"+f.getName();
                             notes.add(new SingleNote(f.toString(),getNoteTrunc(notepath,5),f.getName(), new Date(f.lastModified())));
@@ -142,43 +141,89 @@ public class DataModel {
         }
         return text.toString();
     }
-    public boolean createNote(String path, String name, String text){
+    public boolean createNote(String path, String name, String text) {
 
         String filename = path + "/" + name + ".md";
+        String tempfile = path + "/" + name + ".md.temp";
+
+        File temppath = new File(tempfile);
         File filepath = new File(filename);
 
         FileWriter writer = null;
         try {
-            writer = new FileWriter(filepath);
+            writer = new FileWriter(temppath);
             writer.append(text);
             writer.flush();
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        if (filepath.exists()) {
+            int counter = 1;
+            while (filepath.exists()) {
+                String tempFile = path + "/" + name + "##" + counter + "##" + ".md";
+                filepath = new File(tempFile);
+                counter++;
+            }
+            temppath.renameTo(filepath);
+        }
+        else {
+            temppath.renameTo(filepath);
+        }
         return true;
     }
-    /*
-    private File checkFileDate(String path, Date timeOfStartedEdit){
-        File filepath = new File(path);
-        if(filepath.exists()){
-
-        }
-
-    }
-    private File getValidFilename(String filename) {
-        int filecounter = 0;
+    public Date getLastModifiedDate(String filename){
         File filepath = new File(filename);
-        if (filepath.exists()){
-            filecounter++;
-            while (filepath.exists()) {
-                filepath = new File(filename + "_" + filecounter);
+        return new Date(filepath.lastModified());
+    }
+
+    /**
+     * Note : this is not robust, since I don't know what syncthing does
+     * Does the oldFile still exist, that means it didn't get deleted by Syncthing
+     * - Check if it was modified by syncthing in the meantime by checking date
+     *      - Yes
+     *          Create Note should save it as a duplicate with higher number
+     *      - No
+     *          Delete Old File, then Create Note
+     */
+    public void modifyNote(String path, String oldname, String newName, String text, Date lastModified){
+        File oldFile = new File(path+"/"+oldname+".md");
+
+        if(oldFile.exists()){
+            long lastModifiedDate = new Date(oldFile.lastModified()).getTime();
+            Log.d("lastModDate",String.valueOf(lastModifiedDate));
+            Log.d("lastModDate2",String.valueOf(lastModified.getTime()));
+            if(lastModifiedDate == lastModified.getTime()){
+                oldFile.delete();
+                Log.d("del","delete old file");
+                createNote(path,newName,text);
             }
-            return filepath;
+            else{
+                createNote(path,newName,text);
+            }
         }
         else{
-            return filepath;
+            createNote(path,newName,text);
         }
+    }
+    public void deleteNote(String path){
+        File toDelete = new File(path);
+        toDelete.delete();
+    }
+    public void createNotebook(String rackname,String notebookname){
+        File dir = new File(this.path+"/"+rackname+"/"+notebookname);
+        dir.mkdir();
+    }
+    public void deleteNotebook(String path){
+        File dir = new File(path);
+        deleteRecursive(dir);
+    }
+    private void deleteRecursive(File fileOrDirectory) {
+        if (fileOrDirectory.isDirectory())
+            for (File child : fileOrDirectory.listFiles())
+                deleteRecursive(child);
 
-    }*/
+        fileOrDirectory.delete();
+    }
 }

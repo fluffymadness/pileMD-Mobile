@@ -6,11 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.fluffymadness.pilemdMobile.ui.NotesFragment;
 import com.fluffymadness.pilemdMobile.ui.R;
 
 import java.util.ArrayList;
@@ -21,16 +23,15 @@ import java.util.Comparator;
  * Created by fluffymadness on 9/25/2016.
  */
 
-public class NotesAdapter extends BaseAdapter{
+public class NotesAdapter extends ArrayAdapter{
 
     private Context context;
-    private NotesEditListernerInterface fragment;
     private ArrayList<SingleNote> data;
 
-    public NotesAdapter(Context context, NotesEditListernerInterface fragment,ArrayList<SingleNote> content) {
+    public NotesAdapter(Context context, int resource, ArrayList<SingleNote> content) {
+        super(context, resource, content);
         this.context = context;
         this.data = content;
-        this.fragment = fragment;
     }
 
     @Override
@@ -64,7 +65,7 @@ public class NotesAdapter extends BaseAdapter{
         imageView.setOnClickListener(new NotesEditClickListener(data.get(i).getName()+"."+data.get(i).getExtension()){
             @Override
             public void onClick(View view) {
-                fragment.editNote(this.getName());
+                ((NotesEditListernerInterface)context).editNote(this.getName());
             }
         });
         return row;

@@ -1,16 +1,15 @@
 package com.fluffymadness.pilemdMobile.ui;
 
-import android.app.Activity;
-import android.support.v4.app.DialogFragment;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -21,7 +20,6 @@ import com.fluffymadness.pilemdMobile.model.NotebookAdapter;
 import com.fluffymadness.pilemdMobile.model.SingleNotebook;
 import com.fluffymadness.pilemdMobile.model.SortBy;
 
-import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -30,9 +28,9 @@ import java.util.ArrayList;
 
 public class NotebookFragment extends Fragment implements CreateNotebookDialog.CreateNotebookDialogListener {
     private DataModel dataModel;
-    private FragmentActivity myContext;
     private String rackName;
     private FloatingActionButton addNotebookButton;
+    private NotebookAdapter adapter;
 
     private ListView notebookList;
 
@@ -61,7 +59,7 @@ public class NotebookFragment extends Fragment implements CreateNotebookDialog.C
         setHasOptionsMenu(true);
         super.onCreate(savedInstanceState);
         rackName = getArguments().getString("rackName");
-        String path= PreferenceManager.getDefaultSharedPreferences(myContext).getString("pref_root_directory", "");
+        String path= PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("pref_root_directory", "");
         dataModel = new DataModel(path);
 
     }
@@ -71,32 +69,21 @@ public class NotebookFragment extends Fragment implements CreateNotebookDialog.C
         getActivity().setTitle(R.string.title_fragment_notebooks);
         refreshNotebooks();
     }
-    @Override
-    public void onAttach(Activity activity) {
-        myContext=(FragmentActivity) activity;
-        super.onAttach(activity);
-    }
 
     private void refreshNotebooks(){
         //TODO handle Exception if folder is null
         ArrayList<SingleNotebook> notebooks = dataModel.getNotebooks(this.rackName);
-        NotebookAdapter adapter = new NotebookAdapter(myContext, notebooks);
+        adapter = new NotebookAdapter(getActivity(), 0, notebooks);
         adapter.sort(SortBy.NAME);
-        notebookList = (ListView) getView().findViewById(R.id.folderview);
+        notebookList = (ListView) getView().findViewById(R.id.notebookview);
         notebookList.setAdapter(adapter);
         notebookList.setOnItemClickListener(new NotebookItemClickListener());
+        registerForContextMenu(notebookList);
+        adapter.notifyDataSetChanged();
 
     }
 
-    @Override
-    public void onDialogPositiveClick(CreateNotebookDialog dialog) {
-       Log.d("bla",dialog.getNotebookName()) ;
-    }
 
-    @Override
-    public void onDialogNegativeClick(CreateNotebookDialog dialog) {
-
-    }
 
     private class NotebookItemClickListener implements ListView.OnItemClickListener {
 
@@ -116,18 +103,48 @@ public class NotebookFragment extends Fragment implements CreateNotebookDialog.C
     private void addNotebook(){
         CreateNotebookDialog dialog = new CreateNotebookDialog();
         dialog.setDialogListener(this);
-        dialog.show(myContext.getSupportFragmentManager(), "CreateNotebookDialogFragment");
+        dialog.show(getActivity().getSupportFragmentManager(), "CreateNotebookDialogFragment");
+    }
+    @Override
+    public void onDialogPositiveClick(CreateNotebookDialog dialog, String notebookname) {
+        dataModel.createNotebook(this.rackName,notebookname);
+        this.refreshNotebooks();
+    }
+
+    @Override
+    public void onDialogNegativeClick(CreateNotebookDialog dialog) {
 
     }
 
     private void selectItem(int position) {
 
         String selectedNotebookName = ((SingleNotebook)this.notebookList.getAdapter().getItem(position)).getName();
-        FragmentManager fm = myContext.getSupportFragmentManager();
+        FragmentManager fm = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fm.beginTransaction();
         NotesFragment fragment = new NotesFragment().newInstance(rackName,selectedNotebookName);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.replace(((ViewGroup)getView().getParent()).getId(), fragment);
         fragmentTransaction.commit();
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+        if (v.getId()==R.id.notebookview) {
+            menu.add(Menu.NONE, 0, 0, R.string.delete_notebook);
+        }
+    }
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+        int menuItemIndex = item.getItemId();
+        if(menuItemIndex == 0){
+            String path =((SingleNotebook)adapter.getItem(info.position)).getPath();
+            dataModel.deleteNotebook(path);
+            adapter.remove(adapter.getItem(info.position));
+            adapter.notifyDataSetChanged();
+        }
+
+        return true;
     }
 }
