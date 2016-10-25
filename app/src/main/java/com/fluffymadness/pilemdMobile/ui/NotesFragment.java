@@ -4,8 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.FileObserver;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -21,7 +24,11 @@ import com.fluffymadness.pilemdMobile.model.NotesAdapter;
 import com.fluffymadness.pilemdMobile.model.NotesEditListernerInterface;
 import com.fluffymadness.pilemdMobile.model.SingleNote;
 import com.fluffymadness.pilemdMobile.model.SortBy;
+import net.rdrei.android.dirchooser.DirectoryChooserFragment;
+import net.rdrei.android.dirchooser.DirectoryChooserActivity;
+import net.rdrei.android.dirchooser.DirectoryChooserConfig;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -35,7 +42,10 @@ public class NotesFragment extends Fragment implements NotesEditListernerInterfa
     private FloatingActionButton addNoteButton;
     private FileObserver directoryObserver;
     private NotesAdapter adapter;
-
+    private String path;
+    private String oldNotePathTemp;
+    private String oldNoteName;
+    private String oldNoteExtension;
     private ListView notesList;
 
     public static NotesFragment newInstance(String rackName, String notebookName) {
@@ -65,7 +75,7 @@ public class NotesFragment extends Fragment implements NotesEditListernerInterfa
         super.onCreate(savedInstanceState);
         rackName = getArguments().getString("rackName");
         notebookName = getArguments().getString("notebookName");
-        String path= PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("pref_root_directory", "");
+        path= PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("pref_root_directory", "");
         dataModel = new DataModel(path);
         /*directoryObserver = new FileObserver(path) {
             @Override
@@ -88,7 +98,8 @@ public class NotesFragment extends Fragment implements NotesEditListernerInterfa
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
         if (v.getId()==R.id.notesview) {
-                menu.add(Menu.NONE, 0, 0, R.string.delete_note);
+            menu.add(Menu.NONE, 0, 0, R.string.move_note);
+            menu.add(Menu.NONE, 1, 1, R.string.delete_note);
         }
     }
     @Override
@@ -97,13 +108,49 @@ public class NotesFragment extends Fragment implements NotesEditListernerInterfa
         int menuItemIndex = item.getItemId();
         Log.d("pos",String.valueOf(info.position));
         if(menuItemIndex == 0){
-            String path =((SingleNote)adapter.getItem(info.position)).getPath();
+            this.oldNotePathTemp=((SingleNote)adapter.getItem(info.position)).getPath();
+            this.oldNoteExtension=((SingleNote)adapter.getItem(info.position)).getExtension();
+            Log.d(oldNotePathTemp,"bla");
+            this.oldNoteName=((SingleNote)adapter.getItem(info.position)).getName();
+
+            final Intent chooserIntent = new Intent(this.getActivity(), DirectoryChooserActivity.class);
+
+            final DirectoryChooserConfig config = DirectoryChooserConfig.builder()
+                    .newDirectoryName("DirChooserSample")
+                    .allowReadOnlyDirectory(true)
+                    .allowNewDirectoryNameModification(true)
+                    .initialDirectory(oldNotePathTemp)
+                    .build();
+
+            chooserIntent.putExtra(DirectoryChooserActivity.EXTRA_CONFIG, config);
+            String temp="";
+
+// REQUEST_DIRECTORY is a constant integer to identify the request, e.g. 0
+            startActivityForResult(chooserIntent, 0);
+        }
+        if(menuItemIndex == 1){
+            String path =((SingleNote)adapter.getItem(info.position)).getFullPath();
             dataModel.deleteNote(path);
             adapter.remove(adapter.getItem(info.position));
             adapter.notifyDataSetChanged();
         }
 
+
         return true;
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d("here","here");
+        if (requestCode == 0) {
+            if (resultCode == DirectoryChooserActivity.RESULT_CODE_DIR_SELECTED) {
+                String path =  data.getStringExtra(DirectoryChooserActivity.RESULT_SELECTED_DIR);
+                String fullpathold = oldNotePathTemp+"/"+oldNoteName+"."+oldNoteExtension;
+                dataModel.moveFile(fullpathold,path,oldNoteName);
+            } else {
+                // Nothing selected
+            }
+        }
     }
 
     @Override
@@ -142,6 +189,9 @@ public class NotesFragment extends Fragment implements NotesEditListernerInterfa
         startActivity(intent);
     }
 
+
+
+
     private class FloatingButtonClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
@@ -158,9 +208,9 @@ public class NotesFragment extends Fragment implements NotesEditListernerInterfa
     }
 
     private void selectItem(int position) {
-        String fullPath = ((SingleNote)this.notesList.getAdapter().getItem(position)).getPath();
+        String path = ((SingleNote)this.notesList.getAdapter().getItem(position)).getFullPath();
         Intent intent = new Intent(getActivity(), ViewNote.class);
-        intent.putExtra("notePath",fullPath);
+        intent.putExtra("notePath",path);
         startActivity(intent);
     }
 }

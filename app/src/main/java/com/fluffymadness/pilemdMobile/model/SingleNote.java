@@ -37,4 +37,5 @@ public class SingleNote {
         return this.name.substring(0,this.name.lastIndexOf('.'));
     }
     public String getExtension() {return this.name.substring(this.name.toString().lastIndexOf('.') + 1);}
+    public String getFullPath() {return getPath()+"/"+getName()+"."+getExtension();}
 }

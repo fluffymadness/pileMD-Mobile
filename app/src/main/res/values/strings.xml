@@ -35,6 +35,7 @@
 
     <!--Strings for NotesFragment Context Menu-->
     <string name="delete_note">Delete Note</string>
+    <string name="move_note">Move Note</string>
 
     <!--Strings for NotebookFragment Context Menu-->
     <string name="delete_notebook">Delete Notebook</string>

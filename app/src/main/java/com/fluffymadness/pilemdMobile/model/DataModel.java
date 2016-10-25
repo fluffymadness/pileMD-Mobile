@@ -93,7 +93,7 @@ public class DataModel {
                         String extension = getFileExtension(f);
                         if ((extension.equalsIgnoreCase("txt"))||(extension.equalsIgnoreCase("md"))) {
                             String notepath = dir+"/"+f.getName();
-                            notes.add(new SingleNote(f.toString(),getNoteTrunc(notepath,1,5),f.getName(), new Date(f.lastModified())));
+                            notes.add(new SingleNote(dir.getPath(),getNoteTrunc(notepath,1,5),f.getName(), new Date(f.lastModified())));
                         }
                     }
                 }
@@ -253,5 +253,11 @@ public class DataModel {
                 deleteRecursive(child);
 
         fileOrDirectory.delete();
+    }
+
+    public void moveFile(String oldpath, String newpath, String notename){
+        String note = getNote(oldpath);
+        createNote(newpath,notename,note);
+        deleteNote(oldpath);
     }
 }
