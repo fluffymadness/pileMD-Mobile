@@ -8,5 +8,11 @@
             android:key="pref_root_directory"
             android:title="@string/pref_root_directory_title"/>
 
+        <Preference
+            android:id="@+id/pref_default_notebook"
+            android:summary=""
+            android:key="pref_default_notebook"
+            android:title="@string/pref_default_notebook"/>
+
     </PreferenceCategory>
 </PreferenceScreen>

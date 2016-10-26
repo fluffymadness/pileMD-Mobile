@@ -41,9 +41,10 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        checkIfFirstRun();
         String path=PreferenceManager.getDefaultSharedPreferences(this).getString("pref_root_directory", "");
         dataModel = new DataModel(path);
-        checkIfFirstRun();
+
         setupToolBar();
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -52,10 +53,8 @@ public class MainActivity extends AppCompatActivity{
         LayoutInflater inflater = getLayoutInflater();
         View listHeaderView = inflater.inflate(R.layout.header,null, false);
         mDrawerList.addHeaderView(listHeaderView);
-
         setupDrawerToggle();
-       // getSupportFragmentManager().addOnBackStackChangedListener(getListener());
-       // refreshRackDrawer(); //TODO this gets called twice do something about it
+
 
     }
     private void refreshRackDrawer(){
@@ -109,7 +108,6 @@ public class MainActivity extends AppCompatActivity{
 
 
         if (fragment != null) {
-            FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.content_frame, fragment, "Notebook_Fragment");
             transaction.commit();
@@ -130,13 +128,18 @@ public class MainActivity extends AppCompatActivity{
         if (prefs.getBoolean("firstrun", true)) {
             File rootDir = Environment.getExternalStorageDirectory();
             String full = rootDir + "/pilemd";
+            String fullnotebook = full+"/FirstNotebook";
             File fullpath = new File(full);
+            File defaultnotebookpath = new File(fullnotebook);
             if(!(fullpath.exists() && fullpath.isDirectory())){
                 fullpath.mkdirs();
+                defaultnotebookpath.mkdirs();
             }
 
-            prefs.edit().putString("pref_root_directory", rootDir.toString()+"/pilemd").commit();
+            prefs.edit().putString("pref_root_directory", full).commit();
             prefs.edit().putBoolean("firstrun", false).commit();
+
+            prefs.edit().putString("pref_default_notebook", fullnotebook).commit();
         }
     }
 
@@ -175,23 +178,7 @@ public class MainActivity extends AppCompatActivity{
                 super.onBackPressed();
         }
     }
-    private FragmentManager.OnBackStackChangedListener getListener() {
-        FragmentManager.OnBackStackChangedListener result = new FragmentManager.OnBackStackChangedListener() {
-            public void onBackStackChanged() {
-                FragmentManager manager = getSupportFragmentManager();
-                if (manager != null) {
-                    int backStackEntryCount = manager.getBackStackEntryCount();
-                    if (backStackEntryCount == 0) {
-                        finish();
-                    }
-                    Fragment fragment = manager.getFragments()
-                            .get(backStackEntryCount - 1);
-                    fragment.onResume();
-                }
-            }
-        };
-        return result;
-    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

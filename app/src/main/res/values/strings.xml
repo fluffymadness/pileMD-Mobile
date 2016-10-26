@@ -11,6 +11,7 @@
     <string name="general_preferences_title">PileMD Preferences</string>
     <string name="app_settings">App Settings</string>
     <string name="pref_root_directory_title">Select storage folder</string>
+    <string name="pref_default_notebook">Select default notebook</string>
 
     <!--Strings for Actionbar-->
     <string name="title_activity_settings">Settings</string>
