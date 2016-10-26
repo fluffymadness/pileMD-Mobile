@@ -28,6 +28,7 @@ public class DataModel {
     }
 
     public ArrayList<SingleRack> getRacks() {
+
         File dir = new File(path);
         if(dir.exists()) {
             ArrayList<SingleRack> racks = new ArrayList<>();

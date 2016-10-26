@@ -59,12 +59,17 @@ public class MainActivity extends AppCompatActivity{
     }
     private void refreshRackDrawer(){
         //TODO : handle exception if racklist is null, racklist is null when folder doesn't exist
+        try{
+            ArrayList<SingleRack> racklist = dataModel.loadRackContent();
+            RackAdapter adapter = new RackAdapter(this, 0, racklist);
+            adapter.sort(SortBy.NAME);
+            mDrawerList.setAdapter(adapter);
+            mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+        }
+        catch(NullPointerException e){
+        }
 
-        ArrayList<SingleRack> racklist = dataModel.loadRackContent();
-        RackAdapter adapter = new RackAdapter(this, 0, racklist);
-        adapter.sort(SortBy.NAME);
-        mDrawerList.setAdapter(adapter);
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+
     }
     @Override
     protected void onResume(){

@@ -8,9 +8,13 @@ import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
+import com.fluffymadness.pilemdMobile.model.SingleNote;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class FileDialog {
@@ -132,7 +136,6 @@ public class FileDialog {
         Log.d("current",currentPath.toString());
         Log.d("docroot",documentRoot.toString());
         if (path.exists()) {
-            if (path.getParentFile() != null && !currentPath.toString().equals(documentRoot.toString())) r.add(PARENT_DIR);
             FilenameFilter filter = new FilenameFilter() {
                 public boolean accept(File dir, String filename) {
                     File sel = new File(dir, filename);
@@ -148,6 +151,8 @@ public class FileDialog {
             for (String file : fileList1) {
                 r.add(file);
             }
+            Collections.sort(r);
+            if (path.getParentFile() != null && !currentPath.toString().equals(documentRoot.toString())) r.add(0,PARENT_DIR);
         }
         fileList = (String[]) r.toArray(new String[]{});
     }

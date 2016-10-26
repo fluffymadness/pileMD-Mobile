@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
     package="com.fluffymadness.pilemdMobile.ui">
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -19,18 +20,15 @@
         <activity
             android:name="com.fluffymadness.pilemdMobile.ui.SettingsActivity"
             android:label="@string/title_activity_settings"></activity>
-        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
         <activity
             android:name="com.fluffymadness.pilemdMobile.ui.EditorActivity"
             android:label=""></activity>
-        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
         <activity
             android:theme="@style/AppFullScreenTheme"
             android:name="com.fluffymadness.pilemdMobile.ui.ViewNote"
             android:label="@string/title_view_note"></activity>
-        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
         <activity android:name="net.rdrei.android.dirchooser.DirectoryChooserActivity" />
-        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     </application>
 
 </manifest>
