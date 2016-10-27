@@ -104,7 +104,20 @@ public class MainActivity extends AppCompatActivity{
         }
 
     }
-
+    private void loadDefaultNotebook(){
+        String path = PreferenceManager.getDefaultSharedPreferences(this).getString("pref_root_directory", "");
+        if(!path.equals("")){
+            File f1 = new File(path);
+            if(f1.exists()){
+                Fragment fragment = NotesFragment.newInstance("rackname","notebookname");
+                if (fragment != null) {
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.content_frame, fragment, "Notebook_Fragment");
+                    transaction.commit();
+                }
+            }
+        }
+    }
     private void selectItem(int position) {
 
         Fragment fragment = null;

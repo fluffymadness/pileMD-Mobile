@@ -26,23 +26,25 @@ public class  SettingsFragment extends PreferenceFragmentCompat {
 
         File mPath = currentRootDirectory;
         rootFolderDialog = new FileDialog(this.getActivity(), mPath);
+        rootFolderDialog.setSelectDirectoryOption(true);
         rootFolderDialog.addDirectoryListener(new FileDialog.DirectorySelectedListener() {
             public void directorySelected(File directory) {
                 updateRootDir(directory);
                 updateRootDirSummary();
             }
         });
-        rootFolderDialog.setSelectDirectoryOption(true);
+
 
         File mPath2 = currentNotebookDirectory;
         defaultNotebookDialog = new FileDialog(this.getActivity(), mPath2);
+        defaultNotebookDialog.setSelectDirectoryOption(true);
         defaultNotebookDialog.addDirectoryListener(new FileDialog.DirectorySelectedListener() {
             public void directorySelected(File directory) {
                 updateDefaultNotebook(directory);
                 updateDefaultNotebookSummary();
             }
         });
-        defaultNotebookDialog.setSelectDirectoryOption(true);
+
 
     }
     void restorePref(){

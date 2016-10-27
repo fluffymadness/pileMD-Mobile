@@ -1,5 +1,6 @@
 package com.fluffymadness.pilemdMobile.ui;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -74,13 +75,14 @@ public class EditorActivity extends AppCompatActivity {
     private void saveNote(){
         String note = editTextField.getText().toString();
         if(this.noteToEdit != null){
-            Log.d("bla",previousNoteTitle);
-            Log.d("blo",getNoteTitle(note));
             dataModel.modifyNote(folderpath,previousNoteTitle,getNoteTitle(note),note,this.fileLastModifiedDate);
         }
         else if(note.length()!=0){
-            Log.d("create","createnote");
             dataModel.createNote(folderpath,getNoteTitle(note),note);
+            Intent result = getIntent();
+            result.putExtra("RESULT_STRING", folderpath+"/"+getNoteTitle(note)+".md");
+            setResult(Activity.RESULT_OK, result);
+            finish();
         }
 
         //TODO, only overwrite when date is newer then the already synced version, else make a copy with _1
@@ -100,6 +102,13 @@ public class EditorActivity extends AppCompatActivity {
     protected void onDestroy(){
         super.onDestroy();
         saveNote();
+    }
+
+    /*Fixes result canceled on back button press*/
+    @Override
+    public void onBackPressed() {
+        saveNote();
+        super.onBackPressed();
     }
 
 
