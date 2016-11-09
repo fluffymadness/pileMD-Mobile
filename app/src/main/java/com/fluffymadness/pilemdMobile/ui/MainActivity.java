@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements PathSupplier{
                 Fragment fragment = NotesFragment.newInstance();
                 if (fragment != null) {
                     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.content_frame, fragment, "Notebook_Fragment");
+                    transaction.replace(R.id.content_frame, fragment, "Notes_Fragment");
                     transaction.commit();
                 }
             }
@@ -121,17 +121,16 @@ public class MainActivity extends AppCompatActivity implements PathSupplier{
     }
     private void selectItem(int position) {
         String rackName = ((SingleRack)mDrawerList.getAdapter().getItem(position)).getName();
-        createNotebookFragment(rackName);
-        mDrawerList.setItemChecked(position, true);
-        mDrawerList.setSelection(position);
-        mDrawerLayout.closeDrawer(mDrawerList);
-    }
-    private boolean createNotebookFragment(String path){
-
-        Fragment fragment = NotebookFragment.newInstance();
         this.path.resetPath();
-        this.path.goForward(path);
-
+        this.path.goForward(rackName);
+        if(createNotebookFragment()) {
+            mDrawerList.setItemChecked(position, true);
+            mDrawerList.setSelection(position);
+            mDrawerLayout.closeDrawer(mDrawerList);
+        }
+    }
+    private boolean createNotebookFragment(){
+        Fragment fragment = NotebookFragment.newInstance();
         if (fragment != null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.content_frame, fragment, "Notebook_Fragment");
@@ -201,7 +200,8 @@ public class MainActivity extends AppCompatActivity implements PathSupplier{
             }
             else if(notesFragment !=null && notesFragment.isVisible()){
                 path.getBack();
-                super.onBackPressed();
+                createNotebookFragment();
+               // super.onBackPressed();
             }
             else {
                 super.onBackPressed();
