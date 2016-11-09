@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.fluffymadness.pilemdMobile.model.DataModel;
+import com.fluffymadness.pilemdMobile.model.Path;
 
 import us.feras.mdv.MarkdownView;
 
@@ -17,7 +18,7 @@ import us.feras.mdv.MarkdownView;
 public class ViewNote extends AppCompatActivity {
 
     private Toolbar toolbar;
-    private DataModel dataModel;
+    private Path path;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +26,7 @@ public class ViewNote extends AppCompatActivity {
         setContentView(R.layout.view_note);
 
         String path= PreferenceManager.getDefaultSharedPreferences(this).getString("pref_root_directory", "");
-        dataModel = new DataModel(path);
+        this.path = new Path(path);
         setupToolBar();
 
         Intent intent = getIntent();
@@ -33,7 +34,7 @@ public class ViewNote extends AppCompatActivity {
         MarkdownView markdownView = (MarkdownView) findViewById(R.id.markdownView);
 
         //TODO error handling if null
-        markdownView.loadMarkdown(dataModel.getNoteMarkdown(notepath),"file:///android_asset/markdownview.css");
+        markdownView.loadMarkdown(this.path.getNoteMarkdown(notepath),"file:///android_asset/markdownview.css");
         getSupportActionBar().hide();
 
     }

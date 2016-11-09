@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,6 +18,7 @@ import android.widget.ListView;
 
 import com.fluffymadness.pilemdMobile.model.DataModel;
 import com.fluffymadness.pilemdMobile.model.NotebookAdapter;
+import com.fluffymadness.pilemdMobile.model.Path;
 import com.fluffymadness.pilemdMobile.model.SingleNotebook;
 import com.fluffymadness.pilemdMobile.model.SortBy;
 
@@ -27,18 +29,14 @@ import java.util.ArrayList;
  */
 
 public class NotebookFragment extends Fragment implements CreateNotebookDialog.CreateNotebookDialogListener {
-    private DataModel dataModel;
-    private String rackName;
     private FloatingActionButton addNotebookButton;
     private NotebookAdapter adapter;
-
     private ListView notebookList;
+    private Path path;
 
-    public static NotebookFragment newInstance(String rackName) {
+    public static NotebookFragment newInstance() {
         NotebookFragment f = new NotebookFragment();
         Bundle args = new Bundle();
-        args.putString("rackName", rackName);
-        f.setArguments(args);
         return f;
     }
 
@@ -58,21 +56,19 @@ public class NotebookFragment extends Fragment implements CreateNotebookDialog.C
     public void onCreate(Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         super.onCreate(savedInstanceState);
-        rackName = getArguments().getString("rackName");
-        String path= PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("pref_root_directory", "");
-        dataModel = new DataModel(path);
-
+        path = ((PathSupplier)getActivity()).getPath();
     }
     @Override
     public void onResume(){
         super.onResume();
         getActivity().setTitle(R.string.title_fragment_notebooks);
+        path = ((PathSupplier)getActivity()).getPath();
         refreshNotebooks();
     }
 
     private void refreshNotebooks(){
         //TODO handle Exception if folder is null
-        ArrayList<SingleNotebook> notebooks = dataModel.getNotebooks(this.rackName);
+        ArrayList<SingleNotebook> notebooks = path.getNotebooks();
         adapter = new NotebookAdapter(getActivity(), 0, notebooks);
         adapter.sort(SortBy.NAME);
         notebookList = (ListView) getView().findViewById(R.id.notebookview);
@@ -107,7 +103,7 @@ public class NotebookFragment extends Fragment implements CreateNotebookDialog.C
     }
     @Override
     public void onDialogPositiveClick(CreateNotebookDialog dialog, String notebookname) {
-        dataModel.createNotebook(this.rackName,notebookname);
+        path.createNotebook(notebookname);
         this.refreshNotebooks();
     }
 
@@ -121,9 +117,10 @@ public class NotebookFragment extends Fragment implements CreateNotebookDialog.C
         String selectedNotebookName = ((SingleNotebook)this.notebookList.getAdapter().getItem(position)).getName();
         FragmentManager fm = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fm.beginTransaction();
-        NotesFragment fragment = new NotesFragment().newInstance(rackName,selectedNotebookName);
+        NotesFragment fragment = new NotesFragment().newInstance();
+        path.goForward(selectedNotebookName);
         fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.replace(((ViewGroup)getView().getParent()).getId(), fragment);
+        fragmentTransaction.replace(((ViewGroup)getView().getParent()).getId(), fragment, "Notes_Fragment");
         fragmentTransaction.commit();
     }
 
@@ -140,7 +137,7 @@ public class NotebookFragment extends Fragment implements CreateNotebookDialog.C
         int menuItemIndex = item.getItemId();
         if(menuItemIndex == 0){
             String path =((SingleNotebook)adapter.getItem(info.position)).getPath();
-            dataModel.deleteNotebook(path);
+            this.path.deleteNotebook(path);
             adapter.remove(adapter.getItem(info.position));
             adapter.notifyDataSetChanged();
         }

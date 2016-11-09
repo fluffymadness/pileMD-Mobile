@@ -20,6 +20,7 @@ package com.fluffymadness.pilemdMobile.ui;
         import android.widget.ListView;
 
         import com.fluffymadness.pilemdMobile.model.DataModel;
+        import com.fluffymadness.pilemdMobile.model.Path;
         import com.fluffymadness.pilemdMobile.model.RackAdapter;
         import com.fluffymadness.pilemdMobile.model.SingleRack;
         import com.fluffymadness.pilemdMobile.model.SortBy;
@@ -27,14 +28,13 @@ package com.fluffymadness.pilemdMobile.ui;
         import java.io.File;
         import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity implements PathSupplier{
 
     private Toolbar toolbar;                              // Declaring the Toolbar Object
-    private DataModel dataModel;
-
     android.support.v7.app.ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
+    private Path path;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +43,7 @@ public class MainActivity extends AppCompatActivity{
 
         checkIfFirstRun();
         String path=PreferenceManager.getDefaultSharedPreferences(this).getString("pref_root_directory", "");
-        dataModel = new DataModel(path);
-
+        this.path = new Path(path);
         setupToolBar();
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -54,13 +53,14 @@ public class MainActivity extends AppCompatActivity{
         View listHeaderView = inflater.inflate(R.layout.header,null, false);
         mDrawerList.addHeaderView(listHeaderView);
         setupDrawerToggle();
+        loadDefaultNotebook();
 
 
     }
     private void refreshRackDrawer(){
         //TODO : handle exception if racklist is null, racklist is null when folder doesn't exist
         try{
-            ArrayList<SingleRack> racklist = dataModel.loadRackContent();
+            ArrayList<SingleRack> racklist = path.getRacks();
             RackAdapter adapter = new RackAdapter(this, 0, racklist);
             adapter.sort(SortBy.NAME);
             mDrawerList.setAdapter(adapter);
@@ -105,11 +105,12 @@ public class MainActivity extends AppCompatActivity{
 
     }
     private void loadDefaultNotebook(){
-        String path = PreferenceManager.getDefaultSharedPreferences(this).getString("pref_root_directory", "");
+        String path = PreferenceManager.getDefaultSharedPreferences(this).getString("pref_default_notebook", "");
         if(!path.equals("")){
             File f1 = new File(path);
             if(f1.exists()){
-                Fragment fragment = NotesFragment.newInstance("rackname","notebookname");
+                this.path.setCurrentPath(path);
+                Fragment fragment = NotesFragment.newInstance();
                 if (fragment != null) {
                     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                     transaction.replace(R.id.content_frame, fragment, "Notebook_Fragment");
@@ -119,22 +120,25 @@ public class MainActivity extends AppCompatActivity{
         }
     }
     private void selectItem(int position) {
-
-        Fragment fragment = null;
         String rackName = ((SingleRack)mDrawerList.getAdapter().getItem(position)).getName();
-        fragment = NotebookFragment.newInstance(rackName);
+        createNotebookFragment(rackName);
+        mDrawerList.setItemChecked(position, true);
+        mDrawerList.setSelection(position);
+        mDrawerLayout.closeDrawer(mDrawerList);
+    }
+    private boolean createNotebookFragment(String path){
 
+        Fragment fragment = NotebookFragment.newInstance();
+        this.path.resetPath();
+        this.path.goForward(path);
 
         if (fragment != null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.content_frame, fragment, "Notebook_Fragment");
             transaction.commit();
-            mDrawerList.setItemChecked(position, true);
-            mDrawerList.setSelection(position);
-            mDrawerLayout.closeDrawer(mDrawerList);
-
+            return true;
         } else {
-            Log.e("MainActivity", "Error in creating fragment");
+            return false;
         }
     }
     private void showSettings() {
@@ -189,11 +193,19 @@ public class MainActivity extends AppCompatActivity{
         if (mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
             super.onBackPressed();
         } else {
-            NotebookFragment notebookFragment = (NotebookFragment)getSupportFragmentManager().findFragmentByTag("Notebook_Fragment");
-            if(notebookFragment != null && notebookFragment.isVisible())
+            NotebookFragment notebookFragment = (NotebookFragment) getSupportFragmentManager().findFragmentByTag("Notebook_Fragment");
+            NotesFragment notesFragment = (NotesFragment) getSupportFragmentManager().findFragmentByTag("Notes_Fragment");
+            if (notebookFragment != null && notebookFragment.isVisible()) {
+                //path.getBack();
                 this.mDrawerLayout.openDrawer(Gravity.LEFT);
-            else
+            }
+            else if(notesFragment !=null && notesFragment.isVisible()){
+                path.getBack();
                 super.onBackPressed();
+            }
+            else {
+                super.onBackPressed();
+            }
         }
     }
 
@@ -201,4 +213,23 @@ public class MainActivity extends AppCompatActivity{
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
     }
+    public Path getPath(){
+        return this.path;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("currentPath", this.path.getCurrentPath());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        this.path.setCurrentPath(savedInstanceState.getString("currentPath"));
+    }
+}
+
+interface PathSupplier{
+    Path getPath();
 }

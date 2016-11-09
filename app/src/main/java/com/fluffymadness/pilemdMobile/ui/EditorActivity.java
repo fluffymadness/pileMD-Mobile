@@ -10,6 +10,7 @@ import android.util.Log;
 import android.widget.EditText;
 
 import com.fluffymadness.pilemdMobile.model.DataModel;
+import com.fluffymadness.pilemdMobile.model.Path;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -26,25 +27,24 @@ public class EditorActivity extends AppCompatActivity {
     private String folderpath;
     private String noteToEdit;
     private Toolbar toolbar;
-    private DataModel dataModel;
+    private Path path;
     private EditText editTextField;
     private Date fileLastModifiedDate;
     private String previousNoteTitle;
+    private boolean onBackPressed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_note);
-
-        String path= PreferenceManager.getDefaultSharedPreferences(this).getString("pref_root_directory", "");
-        dataModel = new DataModel(path);
         setupToolBar();
-
         Intent intent = getIntent();
-        folderpath = path + "/" + intent.getStringExtra("folderPath");
+        folderpath = intent.getStringExtra("folderPath");
+        path = new Path(folderpath);
         editTextField = (EditText)findViewById(R.id.edit_text);
 
         noteToEdit = intent.getStringExtra("noteName");
+        onBackPressed = false;
         loadNote();
     }
     @Override
@@ -55,8 +55,8 @@ public class EditorActivity extends AppCompatActivity {
     private void loadNote(){
         if(noteToEdit != null){
             this.setTitle(R.string.title_edit_note);
-            String noteText = dataModel.getNote(folderpath+"/"+noteToEdit);
-            this.fileLastModifiedDate = dataModel.getLastModifiedDate(folderpath+"/"+noteToEdit);
+            String noteText = path.getNote(noteToEdit);
+            this.fileLastModifiedDate = path.getLastModifiedDate(noteToEdit);
             editTextField.setText(noteText);
             this.previousNoteTitle = getNoteTitle(noteText);
         }
@@ -75,10 +75,10 @@ public class EditorActivity extends AppCompatActivity {
     private void saveNote(){
         String note = editTextField.getText().toString();
         if(this.noteToEdit != null){
-            dataModel.modifyNote(folderpath,previousNoteTitle,getNoteTitle(note),note,this.fileLastModifiedDate);
+            path.modifyNote(folderpath,previousNoteTitle,getNoteTitle(note),note,this.fileLastModifiedDate);
         }
         else if(note.length()!=0){
-            dataModel.createNote(folderpath,getNoteTitle(note),note);
+            path.createNote(folderpath,getNoteTitle(note),note);
             Intent result = getIntent();
             result.putExtra("RESULT_STRING", folderpath+"/"+getNoteTitle(note)+".md");
             setResult(Activity.RESULT_OK, result);
@@ -101,13 +101,15 @@ public class EditorActivity extends AppCompatActivity {
     @Override
     protected void onDestroy(){
         super.onDestroy();
-        saveNote();
+        if(!onBackPressed)
+            saveNote();
     }
 
     /*Fixes result canceled on back button press*/
     @Override
     public void onBackPressed() {
         saveNote();
+        onBackPressed = true;
         super.onBackPressed();
     }
 

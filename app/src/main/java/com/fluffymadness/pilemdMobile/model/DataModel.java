@@ -21,15 +21,13 @@ import java.util.Date;
 
 public class DataModel {
 
-    private String path;
 
-    public DataModel(String path){
-        this.path = path;
-    }
+    public DataModel(){
 
-    public ArrayList<SingleRack> getRacks() {
+    };
 
-        File dir = new File(path);
+    public ArrayList<SingleRack> getRacks(String absoultePath) {
+        File dir = new File(absoultePath);
         if(dir.exists()) {
             ArrayList<SingleRack> racks = new ArrayList<>();
 
@@ -45,8 +43,8 @@ public class DataModel {
         return null;
 
     }
-    public ArrayList<SingleNotebook> getNotebooks(String rackname){
-        File dir = new File(path+"/"+rackname);
+    public ArrayList<SingleNotebook> getNotebooks(String absolutePath){
+        File dir = new File(absolutePath);
         if(dir.exists()) {
             ArrayList<SingleNotebook> notebooks = new ArrayList<>();
 
@@ -69,22 +67,10 @@ public class DataModel {
         }
         return null;
     }
-    public boolean createRack(String dir, String name){
-        return true;
-    }
 
-    public ArrayList<SingleRack> loadRackContent(){
-        ArrayList<SingleRack> racklist = getRacks();
-        if(racklist!=null){
-            Log.d("racklist", "racklist is not null");
-            return racklist;
-        }
-        else{
-            return null;
-        }
-    }
-    public ArrayList<SingleNote> getNotes(String rackname, String foldername){
-        File dir = new File(path+"/"+rackname+"/"+foldername);
+
+    public ArrayList<SingleNote> getNotes(String absolutePath){
+        File dir = new File(absolutePath);
         if(dir.exists()) {
             ArrayList<SingleNote> notes = new ArrayList<>();
 
@@ -106,16 +92,13 @@ public class DataModel {
     public String getFileExtension(File filename){
         return filename.toString().substring(filename.toString().lastIndexOf('.') + 1);
     }
-    public String getPath(){
-        return this.path;
+
+    public String getNote(String absolutePath){
+        return getNoteTrunc(absolutePath, 0,0);
     }
 
-    public String getNote(String fullpath){
-        return getNoteTrunc(fullpath, 0,0);
-    }
-
-    public String getNoteMarkdown (String fullpath){
-        File file = new File(fullpath);
+    public String getNoteMarkdown (String absolutePath){
+        File file = new File(absolutePath);
         StringBuilder text = new StringBuilder();
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
@@ -140,9 +123,9 @@ public class DataModel {
         }
         return text.toString();
     }
-    private String getNoteTrunc(String fullpath, int fromLine, int toLine ){
+    private String getNoteTrunc(String absolutePath, int fromLine, int toLine ){
         int counter = 0;
-        File file = new File(fullpath);
+        File file = new File(absolutePath);
         StringBuilder text = new StringBuilder();
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
@@ -216,8 +199,8 @@ public class DataModel {
      *      - No
      *          Delete Old File, then Create Note
      */
-    public void modifyNote(String path, String oldname, String newName, String text, Date lastModified){
-        File oldFile = new File(path+"/"+oldname+".md");
+    public void modifyNote(String absoluteFolderPath, String oldname, String newName, String text, Date lastModified){
+        File oldFile = new File(absoluteFolderPath+"/"+oldname+".md");
 
         if(oldFile.exists()){
             long lastModifiedDate = new Date(oldFile.lastModified()).getTime();
@@ -226,26 +209,26 @@ public class DataModel {
             if(lastModifiedDate == lastModified.getTime()){
                 oldFile.delete();
                 Log.d("del","delete old file");
-                createNote(path,newName,text);
+                createNote(absoluteFolderPath,newName,text);
             }
             else{
-                createNote(path,newName,text);
+                createNote(absoluteFolderPath,newName,text);
             }
         }
         else{
-            createNote(path,newName,text);
+            createNote(absoluteFolderPath,newName,text);
         }
     }
-    public void deleteNote(String path){
-        File toDelete = new File(path);
+    public void deleteNote(String absolutePath){
+        File toDelete = new File(absolutePath);
         toDelete.delete();
     }
-    public void createNotebook(String rackname,String notebookname){
-        File dir = new File(this.path+"/"+rackname+"/"+notebookname);
+    public void createNotebook(String absoluteFolderPath, String notebookname){
+        File dir = new File(absoluteFolderPath+"/"+notebookname);
         dir.mkdir();
     }
-    public void deleteNotebook(String path){
-        File dir = new File(path);
+    public void deleteNotebook(String absoluteFolderPath){
+        File dir = new File(absoluteFolderPath);
         deleteRecursive(dir);
     }
     private void deleteRecursive(File fileOrDirectory) {
@@ -256,9 +239,9 @@ public class DataModel {
         fileOrDirectory.delete();
     }
 
-    public void moveFile(String oldpath, String newpath, String notename){
-        String note = getNote(oldpath);
-        createNote(newpath,notename,note);
-        deleteNote(oldpath);
+    public void moveFile(String absolutePathOld, String absoluteFolderPathNew, String notename){
+        String note = getNote(absolutePathOld);
+        createNote(absoluteFolderPathNew,notename,note);
+        deleteNote(absolutePathOld);
     }
 }

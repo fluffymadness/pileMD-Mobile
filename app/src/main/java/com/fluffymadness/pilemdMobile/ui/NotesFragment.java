@@ -3,7 +3,6 @@ package com.fluffymadness.pilemdMobile.ui;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -16,9 +15,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.fluffymadness.pilemdMobile.model.DataModel;
 import com.fluffymadness.pilemdMobile.model.NotesAdapter;
 import com.fluffymadness.pilemdMobile.model.NotesEditListernerInterface;
+import com.fluffymadness.pilemdMobile.model.Path;
 import com.fluffymadness.pilemdMobile.model.SingleNote;
 import com.fluffymadness.pilemdMobile.model.SortBy;
 
@@ -30,22 +29,15 @@ import java.util.ArrayList;
  */
 
 public class NotesFragment extends Fragment implements NotesEditListernerInterface {
-    private DataModel dataModel;
-    private String rackName;
-    private String notebookName;
     private FloatingActionButton addNoteButton;
     private NotesAdapter adapter;
-    private String path;
     private ListView notesList;
+    private Path path;
 
     static final int ADD_NOTE_REQUEST = 1;
 
-    public static NotesFragment newInstance(String rackName, String notebookName) {
+    public static NotesFragment newInstance() {
         NotesFragment f = new NotesFragment();
-        Bundle args = new Bundle();
-        args.putString("rackName", rackName);
-        args.putString("notebookName", notebookName);
-        f.setArguments(args);
         return f;
     }
 
@@ -68,11 +60,9 @@ public class NotesFragment extends Fragment implements NotesEditListernerInterfa
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setHasOptionsMenu(true);
+        this.path = ((PathSupplier)getActivity()).getPath();
         super.onCreate(savedInstanceState);
-        rackName = getArguments().getString("rackName");
-        notebookName = getArguments().getString("notebookName");
-        path= PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("pref_root_directory", "");
-        dataModel = new DataModel(path);
+
     }
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
@@ -97,7 +87,7 @@ public class NotesFragment extends Fragment implements NotesEditListernerInterfa
             moveNoteDialog.setSelectDirectoryOption(true);
             moveNoteDialog.addDirectoryListener(new FileDialog.DirectorySelectedListener() {
                 public void directorySelected(File directory) {
-                    dataModel.moveFile(fullpathold,directory.getPath(),oldNoteName);
+                    path.moveFile(directory.getPath(),oldNoteName);
                 }
             });
             moveNoteDialog.showDialog();
@@ -107,7 +97,8 @@ public class NotesFragment extends Fragment implements NotesEditListernerInterfa
         }
         if(menuItemIndex == 1){
             String path =((SingleNote)adapter.getItem(info.position)).getFullPath();
-            dataModel.deleteNote(path);
+            Log.d("fulldeletepath",path);
+            this.path.deleteNote(path);
             adapter.remove(adapter.getItem(info.position));
             adapter.notifyDataSetChanged();
         }
@@ -117,13 +108,13 @@ public class NotesFragment extends Fragment implements NotesEditListernerInterfa
     @Override
     public void onResume(){
         super.onResume();
-        getActivity().setTitle(this.notebookName);
+        //getActivity().setTitle(this.notebookName);
         refreshNotes();
     }
 
     private void refreshNotes(){
         //TODO handle Exception if notelist is null
-        ArrayList<SingleNote> notes = dataModel.getNotes(rackName, notebookName);
+        ArrayList<SingleNote> notes = ((PathSupplier)getActivity()).getPath().getNotes();
         adapter = new NotesAdapter(getActivity(),0, notes);
         adapter.sort(SortBy.DATE);
         adapter.setCallBack(this);
@@ -134,14 +125,16 @@ public class NotesFragment extends Fragment implements NotesEditListernerInterfa
     }
 
     private void addNote(){
-        String folderpath = this.rackName+"/"+this.notebookName;
+        String folderpath = path.getCurrentPath();
         Intent intent = new Intent(getActivity(), EditorActivity.class);
         intent.putExtra("folderPath",folderpath);
         startActivityForResult(intent, ADD_NOTE_REQUEST);
     }
     @Override
     public void editNote(String name) {
-        String folderpath = this.rackName+"/"+this.notebookName;
+        String folderpath = path.getCurrentPath();
+        Log.d("folderpath",folderpath);
+        Log.d("notename",name);
         Intent intent = new Intent(getActivity(), EditorActivity.class);
         intent.putExtra("folderPath",folderpath);
         intent.putExtra("noteName", name);
@@ -162,7 +155,7 @@ public class NotesFragment extends Fragment implements NotesEditListernerInterfa
 
         if (requestCode == ADD_NOTE_REQUEST) {
             if (resultCode == Activity.RESULT_OK) {
-               /*Trigger Refresh*/
+             //  refreshNotes();
             }
         }
     }
