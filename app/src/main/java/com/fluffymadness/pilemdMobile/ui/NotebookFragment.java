@@ -119,7 +119,6 @@ public class NotebookFragment extends Fragment implements CreateNotebookDialog.C
         FragmentTransaction fragmentTransaction = fm.beginTransaction();
         NotesFragment fragment = new NotesFragment().newInstance();
         path.goForward(selectedNotebookName);
-        fragmentTransaction.addToBackStack(null);
         fragmentTransaction.replace(((ViewGroup)getView().getParent()).getId(), fragment, "Notes_Fragment");
         fragmentTransaction.commit();
     }
