@@ -8,8 +8,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.fluffymadness.pilemdMobile.model.Path;
-import com.fluffymadness.pilemdMobile.model.SingleNotebook;
-import com.fluffymadness.pilemdMobile.ui.NotesFragment;
+import com.fluffymadness.pilemdMobile.model.DataObjects.SingleNotebook;
+import com.fluffymadness.pilemdMobile.ui.NotesFragment.NotesFragment;
 import com.fluffymadness.pilemdMobile.ui.R;
 
 /**

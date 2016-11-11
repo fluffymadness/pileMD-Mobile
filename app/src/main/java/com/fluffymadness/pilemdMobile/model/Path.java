@@ -2,6 +2,10 @@ package com.fluffymadness.pilemdMobile.model;
 
 import android.util.Log;
 
+import com.fluffymadness.pilemdMobile.model.DataObjects.SingleNote;
+import com.fluffymadness.pilemdMobile.model.DataObjects.SingleNotebook;
+import com.fluffymadness.pilemdMobile.model.DataObjects.SingleRack;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -274,9 +278,10 @@ public class Path{
     }
 
     public void moveFile(String absoluteFolderPathNew, String notename){
-        String note = getNote(getCurrentPath());
+        //TODO don't hardcode this one
+        String note = getNote(notename+".md");
         createNote(absoluteFolderPathNew,notename,note);
-        deleteNote(currentPath+"/"+notename);
+        deleteNote(getCurrentPath()+"/"+notename+".md");
     }
 
 

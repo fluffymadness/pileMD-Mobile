@@ -1,4 +1,4 @@
-package com.fluffymadness.pilemdMobile.model;
+package com.fluffymadness.pilemdMobile.model.DataObjects;
 
 import java.io.File;
 import java.text.SimpleDateFormat;

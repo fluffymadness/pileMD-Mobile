@@ -1,18 +1,16 @@
 package com.fluffymadness.pilemdMobile.ui.NotebookFragment;
 
 
-import android.support.v4.app.Fragment;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 
-import com.fluffymadness.pilemdMobile.model.NotebookAdapter;
+import com.fluffymadness.pilemdMobile.model.Adapters.NotebookAdapter;
 import com.fluffymadness.pilemdMobile.model.Path;
-import com.fluffymadness.pilemdMobile.model.SingleNotebook;
+import com.fluffymadness.pilemdMobile.model.DataObjects.SingleNotebook;
 import com.fluffymadness.pilemdMobile.ui.R;
 
 /**

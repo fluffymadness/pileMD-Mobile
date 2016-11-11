@@ -18,10 +18,11 @@ package com.fluffymadness.pilemdMobile.ui;
         import android.widget.ListView;
 
         import com.fluffymadness.pilemdMobile.model.Path;
-        import com.fluffymadness.pilemdMobile.model.RackAdapter;
-        import com.fluffymadness.pilemdMobile.model.SingleRack;
+        import com.fluffymadness.pilemdMobile.model.Adapters.RackAdapter;
+        import com.fluffymadness.pilemdMobile.model.DataObjects.SingleRack;
         import com.fluffymadness.pilemdMobile.model.SortBy;
         import com.fluffymadness.pilemdMobile.ui.NotebookFragment.NotebookFragment;
+        import com.fluffymadness.pilemdMobile.ui.NotesFragment.NotesFragment;
 
         import java.io.File;
         import java.util.ArrayList;

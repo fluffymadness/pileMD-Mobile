@@ -1,16 +1,16 @@
-package com.fluffymadness.pilemdMobile.model;
+package com.fluffymadness.pilemdMobile.model.Adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.fluffymadness.pilemdMobile.model.DataObjects.SingleNotebook;
+import com.fluffymadness.pilemdMobile.model.SortBy;
 import com.fluffymadness.pilemdMobile.ui.R;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;

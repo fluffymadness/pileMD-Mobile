@@ -8,13 +8,10 @@ import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
-import com.fluffymadness.pilemdMobile.model.SingleNote;
-
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class FileDialog {
