@@ -5,12 +5,10 @@ package com.fluffymadness.pilemdMobile.ui;
         import android.os.Environment;
         import android.preference.PreferenceManager;
         import android.support.v4.app.Fragment;
-        import android.support.v4.app.FragmentManager;
         import android.support.v4.widget.DrawerLayout;
         import android.support.v7.app.AppCompatActivity;
         import android.support.v4.app.FragmentTransaction;
         import android.support.v7.widget.Toolbar;
-        import android.util.Log;
         import android.view.Gravity;
         import android.view.LayoutInflater;
         import android.view.Menu;
@@ -19,11 +17,11 @@ package com.fluffymadness.pilemdMobile.ui;
         import android.widget.AdapterView;
         import android.widget.ListView;
 
-        import com.fluffymadness.pilemdMobile.model.DataModel;
         import com.fluffymadness.pilemdMobile.model.Path;
         import com.fluffymadness.pilemdMobile.model.RackAdapter;
         import com.fluffymadness.pilemdMobile.model.SingleRack;
         import com.fluffymadness.pilemdMobile.model.SortBy;
+        import com.fluffymadness.pilemdMobile.ui.NotebookFragment.NotebookFragment;
 
         import java.io.File;
         import java.util.ArrayList;
@@ -54,7 +52,6 @@ public class MainActivity extends AppCompatActivity implements PathSupplier{
         mDrawerList.addHeaderView(listHeaderView);
         setupDrawerToggle();
         loadDefaultNotebook();
-
 
     }
     private void refreshRackDrawer(){
@@ -230,6 +227,3 @@ public class MainActivity extends AppCompatActivity implements PathSupplier{
     }
 }
 
-interface PathSupplier{
-    Path getPath();
-}

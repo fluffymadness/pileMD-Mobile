@@ -3,13 +3,10 @@ package com.fluffymadness.pilemdMobile.ui;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.widget.EditText;
 
-import com.fluffymadness.pilemdMobile.model.DataModel;
 import com.fluffymadness.pilemdMobile.model.Path;
 
 import java.io.BufferedReader;
