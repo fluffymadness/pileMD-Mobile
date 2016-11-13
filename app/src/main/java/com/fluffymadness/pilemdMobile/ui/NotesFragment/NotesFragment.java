@@ -57,7 +57,7 @@ public class NotesFragment extends Fragment implements NotesEditListernerInterfa
     @Override
     public void onResume(){
         super.onResume();
-        //getActivity().setTitle(this.notebookName);
+        getActivity().setTitle(path.getTitle());
         refreshNotes();
     }
 

@@ -283,6 +283,9 @@ public class Path{
         createNote(absoluteFolderPathNew,notename,note);
         deleteNote(getCurrentPath()+"/"+notename+".md");
     }
+    public String getTitle(){
+        return currentPath.getName();
+    }
 
 
 
