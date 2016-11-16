@@ -16,6 +16,15 @@
         android:gravity="center_vertical"
         android:paddingLeft="20dp"
         android:id="@+id/header_rack_title" />
+    <ImageView
+        android:id="@+id/addRackButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerInParent="true"
+        android:paddingRight="10dp"
+        android:src="@drawable/ic_plus"
+        />
 
 
 </RelativeLayout>

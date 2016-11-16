@@ -45,15 +45,14 @@ public class NotebookFragment extends Fragment implements NotebookFragmentCallba
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
         super.onCreate(savedInstanceState);
-        path = ((PathSupplier)getActivity()).getPath();
     }
     @Override
     public void onResume(){
         super.onResume();
-        getActivity().setTitle(path.getTitle());
+        setHasOptionsMenu(true);
         path = ((PathSupplier)getActivity()).getPath();
+        getActivity().setTitle(path.getTitle());
         refreshNotebooks();
     }
 
@@ -68,7 +67,7 @@ public class NotebookFragment extends Fragment implements NotebookFragmentCallba
         addNotebookButton = (FloatingActionButton)getView().findViewById(R.id.addFolderButton);
 
         notebookList.setOnItemClickListener(new NotebookItemClickListener(this,path));
-        notebookList.setOnCreateContextMenuListener(new NotebookItemLongClickListener(notebookList,path));
+        notebookList.setOnCreateContextMenuListener(new NotebookItemLongClickListener(this,notebookList,path));
         addNotebookButton.setOnClickListener(new CreateNotebookListener(this,path));
 
         adapter.notifyDataSetChanged();

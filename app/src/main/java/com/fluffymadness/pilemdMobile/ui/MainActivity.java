@@ -15,6 +15,7 @@ package com.fluffymadness.pilemdMobile.ui;
         import android.view.MenuItem;
         import android.view.View;
         import android.widget.AdapterView;
+        import android.widget.ImageView;
         import android.widget.ListView;
 
         import com.fluffymadness.pilemdMobile.model.Path;
@@ -23,11 +24,13 @@ package com.fluffymadness.pilemdMobile.ui;
         import com.fluffymadness.pilemdMobile.model.SortBy;
         import com.fluffymadness.pilemdMobile.ui.NotebookFragment.NotebookFragment;
         import com.fluffymadness.pilemdMobile.ui.NotesFragment.NotesFragment;
+        import com.fluffymadness.pilemdMobile.ui.RackFragment.CreateRackListener;
+        import com.fluffymadness.pilemdMobile.ui.RackFragment.RackFragmentCallback;
 
         import java.io.File;
         import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements PathSupplier{
+public class MainActivity extends AppCompatActivity implements PathSupplier, RackFragmentCallback{
 
     private Toolbar toolbar;                              // Declaring the Toolbar Object
     android.support.v7.app.ActionBarDrawerToggle mDrawerToggle;
@@ -50,12 +53,18 @@ public class MainActivity extends AppCompatActivity implements PathSupplier{
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         LayoutInflater inflater = getLayoutInflater();
         View listHeaderView = inflater.inflate(R.layout.header,null, false);
+
+        ImageView addRackButton = (ImageView)listHeaderView.findViewById(R.id.addRackButton);
+        addRackButton.setOnClickListener(new CreateRackListener(this,this.path));
+
         mDrawerList.addHeaderView(listHeaderView);
         setupDrawerToggle();
-        loadDefaultNotebook();
+        if(savedInstanceState == null) {
+            loadDefaultNotebook();
+        }
 
     }
-    private void refreshRackDrawer(){
+    public void refreshRackDrawer(){
         //TODO : handle exception if racklist is null, racklist is null when folder doesn't exist
         try{
             ArrayList<SingleRack> racklist = path.getRacks();
@@ -227,4 +236,5 @@ public class MainActivity extends AppCompatActivity implements PathSupplier{
         this.path.setCurrentPath(savedInstanceState.getString("currentPath"));
     }
 }
+
 

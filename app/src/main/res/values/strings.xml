@@ -40,5 +40,6 @@
 
     <!--Strings for NotebookFragment Context Menu-->
     <string name="delete_notebook">Delete Notebook</string>
+    <string name="rename_notebook">Rename Notebook</string>
 
 </resources>

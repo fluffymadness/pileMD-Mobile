@@ -262,9 +262,21 @@ public class Path{
         toDelete.delete();
     }
     public void createNotebook(String notebookname){
-        File dir = new File(getCurrentPath()+"/"+notebookname);
+        createFolder(getCurrentPath()+"/"+notebookname);
+    }
+    public void createRack(String rackname){
+        createFolder(rootPath+"/"+rackname);
+    }
+    public void renameNotebook(String oldName, String newName){
+        File f1=new File(currentPath+"/"+oldName);
+        f1.renameTo(new File(currentPath+"/"+newName));
+    }
+
+    public void createFolder(String path){
+        File dir = new File(path);
         dir.mkdir();
     }
+
     public void deleteNotebook(String absoluteFolderPath){
         File dir = new File(absoluteFolderPath);
         deleteRecursive(dir);

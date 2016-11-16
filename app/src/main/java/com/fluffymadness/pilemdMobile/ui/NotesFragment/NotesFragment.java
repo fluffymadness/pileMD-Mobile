@@ -50,13 +50,13 @@ public class NotesFragment extends Fragment implements NotesEditListernerInterfa
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-        this.path = ((PathSupplier)getActivity()).getPath();
     }
 
     @Override
     public void onResume(){
         super.onResume();
+        setHasOptionsMenu(true);
+        this.path = ((PathSupplier)getActivity()).getPath();
         getActivity().setTitle(path.getTitle());
         refreshNotes();
     }
