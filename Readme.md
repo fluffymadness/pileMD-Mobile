@@ -15,6 +15,8 @@ For now it builds and hast the following features
 Notes Functionality
 
 - basic note creation
+- basic notes rename
+- basic note movement
 - basic notes editing
 - basic note viewing
 - notes deletion
@@ -24,10 +26,12 @@ Notebook Functionality
 
 - Notebook Creation
 - Notebook Deletion
+- Notebook Rename
 
 Rack Functionality
 
 - Rack Viewing
+- Rack Creation
 
 It is in alpha state, so some features are missing or do not work as expected.
 
@@ -36,11 +40,10 @@ TODO
 
 Racks
 
-- Add functionality for creating/renaming/removing racks
+- Add functionality for renaming/removing racks
 
 Notebooks
 
-- Add functionality for renaming notebooks
 - Add are you sure dialog when removing a notebooks
 
 Notes
